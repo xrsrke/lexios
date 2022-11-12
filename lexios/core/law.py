@@ -3,11 +3,11 @@ from __future__ import annotations
 from abc import ABC, abstractclassmethod
 from typing import TYPE_CHECKING, Dict, List, NoReturn, Optional
 
-import optimus.matter as matter
-from optimus.utils import camel_to_snake
+import lexios.matter as matter
+from lexios.utils import camel_to_snake
 
 if TYPE_CHECKING:
-    from optimus.core.property import Property
+    from lexios.core.property import Property
 
 
 class _BaseLaw(ABC):

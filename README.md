@@ -14,7 +14,7 @@ This uses a pyproject.yaml to configuration the project. In this example, [flit]
     - template-sync.yml - Update GitHub Repo with enhancments to base template
 - docs - collect documents (default format .md)
 - src - place new source code here
-  - optimus - sample package (this can be deleted when creating a new repository)
+  - lexios - sample package (this can be deleted when creating a new repository)
 - tests - contains Python based test cases to validation src code
 - .pre-commit-config.yaml - Contains various pre-check fixes for Python
 - .templateversionrc - used to track template version usage.

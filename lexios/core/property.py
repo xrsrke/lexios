@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Dict, Optional
 
-import optimus.core.law as law
-import optimus.unit as unit
-import optimus.matter as matter
-from optimus.utils import camel_to_snake
+import lexios.core.law as law
+import lexios.unit as unit
+import lexios.matter as matter
+from lexios.utils import camel_to_snake
 
 
 class PropertyData(dict): pass

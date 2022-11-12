@@ -1,4 +1,4 @@
-from optimus.utils import (
+from lexios.utils import (
     camel_to_snake,
     str2fml,
     fml2str

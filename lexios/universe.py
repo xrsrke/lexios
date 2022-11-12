@@ -9,7 +9,7 @@ from typing import (
 
 
 if TYPE_CHECKING:
-    from optimus.core.law import Law
+    from lexios.core.law import Law
 
 
 class _BaseUniverse:

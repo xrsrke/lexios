@@ -4,16 +4,13 @@ from typing import (
     TYPE_CHECKING,
     Dict,
     Optional,
-    NoReturn
 )
 
 from fastcore.meta import PrePostInitMeta
 
-import optimus.core.law as law
-from optimus.core.property import Property
-
-if TYPE_CHECKING:
-    from optimus.universe import Universe
+import lexios.core.law as law
+import lexios.universe as universe
+from lexios.core.property import Property
     
 
 class _BaseMatter(metaclass=PrePostInitMeta):
@@ -21,7 +18,7 @@ class _BaseMatter(metaclass=PrePostInitMeta):
     def __init__(self):
         self._props: Dict[str, Property] = dict()
         self._laws: Dict[str, law.Law] = dict()
-        self._universe: Optional[Universe] = None
+        self._universe: Optional[universe.Universe] = None
     
     @property
     def laws(self) -> Dict[str, law.Law]:
@@ -49,7 +46,7 @@ class _BaseMatter(metaclass=PrePostInitMeta):
         return self._props
     
     def add_prop(self, prop: Property):
-        """Add a property to the law
+        """Add a property to matter
 
         Args:
             prop (Property): property
@@ -60,7 +57,7 @@ class _BaseMatter(metaclass=PrePostInitMeta):
             self.props[name] = prop
     
     @property
-    def universe(self) -> Optional[Universe]:
+    def universe(self) -> Optional[universe.Universe]:
         """Return the universe that this matter belongs to
 
         Returns:
@@ -68,9 +65,18 @@ class _BaseMatter(metaclass=PrePostInitMeta):
         """
         return self._universe
     
-    def set_universe(self, universe: Universe):
-        assert isinstance(universe, Universe), f"Expected universe to be a Universe, got {type(universe)}"
-        self._universe = universe
+    def set_universe(self, value: universe.Universe):
+        assert isinstance(value, universe.Universe), f"Expected universe to be a Universe, got {type(universe)}"
+        self._universe = value
 
 
 class Matter(_BaseMatter): pass
+
+
+class MarcoMatter(Matter):
+    """At macroscopic scale, matter behaves in different ways according to classical mechanics"""
+    pass
+
+class NanoMatter(_BaseMatter):
+    """At nanoscale, matter behaves in different ways accoriding to quantum mechanics"""
+    pass
