@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "lexios"
+  site-url: "https://xrsrke.github.io/lexios"
+  description: "docs"
+  repo-branch: main
+  repo-url: "https://github.com/xrsrke/lexios"

@@ -15,10 +15,14 @@ class Unit(Enum):
     TEMPERATURE = u.kelvin
 
     """
-    Derived from SI Units
+    For chemistry
     """
     MOLAR_MASS = u.gram / u.mole
     MOLE = u.mole
     SPECIFIC_HEAT = u.joule / (u.kilogram * u.kelvin)
     PRESSURE = u.pascal
     VOLUME = u.liter
+    
+    """For Physics"""
+    FORCE = u.force
+    ACCELERATION = u.acceleration

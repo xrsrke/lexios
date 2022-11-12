@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Dict, Optional
 
 import lexios.core.law as law
-import lexios.unit as unit
-import lexios.matter as matter
+from lexios.unit import Unit
+from lexios import matter
 from lexios.utils import camel_to_snake
 
 
@@ -13,7 +13,7 @@ class PropertyData(dict): pass
 class _BaseProperty:
     def __init__(self):
         self.abrv: Optional[str] = None
-        self.unit: Optional[unit.Unit] = None
+        self.unit: Optional[Unit] = None
         self._data: PropertyData = PropertyData()
         self._laws: Dict[str, law.Law] = dict()
         self._matter: Optional[matter.Matter] = None
@@ -22,6 +22,7 @@ class _BaseProperty:
     def class_name(cls) -> str:
         return camel_to_snake(cls.__name__)
     
+    @property
     def laws(self) -> Dict[str, law.Law]:
         return self._laws
     
@@ -52,4 +53,29 @@ class Property(_BaseProperty):
     pass
 
 class Mass(Property):
-    pass
+    """Mass Property"""
+    def __init__(self):
+        super().__init__()
+        self.abrv = 'm'
+        self.unit = Unit.MASS
+
+class Mole(Property):
+    """Mole Property"""
+    def __init__(self):
+        super().__init__()
+        self.abrv = 'n'
+        self.unit = Unit.MOLE
+
+class Force(Property):
+    """Force Property"""
+    def __init__(self):
+        super().__init__()
+        self.abrv = 'F'
+        self.unit = Unit.FORCE
+
+class Acceleration(Property):
+    """Acceleration Property"""
+    def __init__(self):
+        super().__init__()
+        self.abrv = 'a'
+        self.unit = Unit.ACCELERATION

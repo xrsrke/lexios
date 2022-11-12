@@ -1,0 +1,5 @@
+numpy
+pint
+sympy
+scipy
+pandas
