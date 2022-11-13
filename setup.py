@@ -1,29 +1,23 @@
-import os
-from setuptools import setup
+from setuptools import setup, find_packages
 
-directory = os.path.abspath(os.path.dirname(__file__))
-with open(os.path.join(directory, 'README.md'), encoding='utf-8') as f:
-  long_description = f.read()
+def read_file(fpath):
+  with open(fpath) as fp:
+    data = fp.read()
+  return data
 
-setup(name='lexios',
-      version='0.0.1',
-      description='',
-      author='xarius',
-      license='MIT',
-      long_description=long_description,
-      long_description_content_type='text/markdown',
-      packages = ['lexios'],
-      classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License"
-      ],
-      install_requires=['numpy', 'requests', 'pillow', 'networkx'],
-      python_requires='>=3.8',
-      extras_require={
-        'gpu': ["pyopencl", "six"],
-        'testing': [
-            "pytest",
-            "mypy",
-        ],
-      },
-      include_package_data=True)
+setup(
+  name = 'lexios',
+  version = '0.0.1',
+  author = 'xariusrke',
+  author_email = 'b3f0cus@icloud.com',
+  maintainer = 'xariusrke',
+  url = 'https://github.com/xrsrke/lexios',
+  python_requires = '>=3.7',
+  install_requires = read_file('requirements.txt').split('\n'),
+  description = 'A symbolic framework for scientific computation',
+  license = 'GPL-3.0',
+  keywords = 'symbolic framework',
+  packages = find_packages(),
+  long_description = read_file('README.md'),
+  long_description_content_type='text/markdown'
+)

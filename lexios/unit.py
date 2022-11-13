@@ -1,10 +1,12 @@
 from enum import Enum
+from dataclasses import dataclass
 
 import pint
 import sympy.physics.units as u
 
 
-class Unit(Enum):
+@dataclass
+class Unit:
     """
     Default SI Units
     """

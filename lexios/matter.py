@@ -4,11 +4,12 @@ from typing import (
     TYPE_CHECKING,
     Dict,
     Optional,
+    List
 )
 
 from fastcore.meta import PrePostInitMeta
 
-import lexios.core.law as law
+import lexios.core.law
 import lexios.universe as universe
 from lexios.core.property import Property
     
@@ -17,27 +18,42 @@ class _BaseMatter(metaclass=PrePostInitMeta):
     """A generic class for matter"""
     def __init__(self):
         self._props: Dict[str, Property] = dict()
-        self._laws: Dict[str, law.Law] = dict()
+        self._laws: Dict[str, lexios.core.law.Law] = dict()
         self._universe: Optional[universe.Universe] = None
     
+    def __post_init__(self):
+        """Automatically initialize and add laws, properties to this matter"""
+        self._init_laws()
+    
+    def _init_laws(self):
+        """Initialize and add laws, properties to this"""
+        if self.laws:
+            for law in self.laws:
+                self.add_law(law)
+    
     @property
-    def laws(self) -> Dict[str, law.Law]:
+    def laws(self) -> Dict[str, lexios.core.law.Law]:
         """Return the list of laws that this matter obeys to
 
         Returns:
             _type_: _description_
         """
         return self._laws
+
+    # @laws.setter
+    # def laws(self, laws: List[lexios.core.law.Law]):
+    #     self._laws = laws
     
-    def add_law(self, law: law.Law):
-        """Add law to this matter
+    def add_law(self, law: lexios.core.law.Law):
+        """Add a law class to this matter
 
         Args:
             law (Law): A law
         """
-        assert isinstance(law, law.Law), f"Expected law to be a Law, got {type(law)}"
+        assert issubclass(law, lexios.core.law.Law), f"Expected law to be a Law, got {type(law)}"
         name = law.class_name()
         if not name in self.laws:
+            # TODO: add initialize the law and auto add all of its properties
             self.laws[name] = law
     
     @property
