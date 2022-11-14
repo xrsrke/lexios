@@ -4,7 +4,8 @@ from typing import (
     TYPE_CHECKING,
     Dict,
     Optional,
-    List
+    List,
+    TypedDict
 )
 
 from fastcore.meta import PrePostInitMeta
@@ -12,7 +13,8 @@ from fastcore.meta import PrePostInitMeta
 import lexios.core.law
 import lexios.universe as universe
 from lexios.core.property import Property
-    
+class PropertyInfo(TypedDict):
+    pass
 
 class _BaseMatter(metaclass=PrePostInitMeta):
     """A generic class for matter"""
@@ -21,15 +23,15 @@ class _BaseMatter(metaclass=PrePostInitMeta):
         self._laws: Dict[str, lexios.core.law.Law] = dict()
         self._universe: Optional[universe.Universe] = None
     
-    def __post_init__(self):
-        """Automatically initialize and add laws, properties to this matter"""
-        self._init_laws()
+    # def __post_init__(self):
+    #     """Automatically initialize and add laws, properties to this matter"""
+    #     self._init_laws()
     
-    def _init_laws(self):
-        """Initialize and add laws, properties to this"""
-        if self.laws:
-            for law in self.laws:
-                self.add_law(law)
+    # def _init_laws(self):
+    #     """Initialize and add laws, properties to this"""
+    #     if self.laws:
+    #         for law in self.laws:
+    #             self.add_law(law)
     
     @property
     def laws(self) -> Dict[str, lexios.core.law.Law]:
@@ -40,9 +42,14 @@ class _BaseMatter(metaclass=PrePostInitMeta):
         """
         return self._laws
 
-    # @laws.setter
-    # def laws(self, laws: List[lexios.core.law.Law]):
-    #     self._laws = laws
+    @laws.setter
+    def laws(self, laws: List[lexios.core.law.Law]):
+        # if isinstance(laws, lexios.core.law.LawList):
+        #     self._laws = laws.laws
+        if isinstance(laws, lexios.core.law.LawList):
+            law_list = laws
+            for name, law_class in law_list.laws.items():
+                self.add_law(law_class)
     
     def add_law(self, law: lexios.core.law.Law):
         """Add a law class to this matter
@@ -53,8 +60,7 @@ class _BaseMatter(metaclass=PrePostInitMeta):
         assert issubclass(law, lexios.core.law.Law), f"Expected law to be a Law, got {type(law)}"
         name = law.class_name()
         if not name in self.laws:
-            # TODO: add initialize the law and auto add all of its properties
-            self.laws[name] = law
+            self.laws[name] = create_law_belongs_to_matter(law=law, matter=self)
     
     @property
     def props(self) -> Dict[str, Property]:
@@ -96,3 +102,12 @@ class MarcoMatter(Matter):
 class NanoMatter(_BaseMatter):
     """At nanoscale, matter behaves in different ways accoriding to quantum mechanics"""
     pass
+
+
+def create_law_belongs_to_matter(law, matter):
+    assert issubclass(law, lexios.core.law.Law) == True
+    assert isinstance(matter, Matter) == True
+    
+    l = law()
+    l.matter = matter
+    return l

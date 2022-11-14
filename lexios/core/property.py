@@ -1,15 +1,22 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, Optional
+from typing import (
+    TYPE_CHECKING,
+    Dict,
+    Optional,
+    Union,
+    List,
+    Iterable
+)
 
 import lexios.core.law as law
 from lexios.unit import Unit
 from lexios import matter
+from lexios.symbolic.symbol import Symbol
 from lexios.utils import camel_to_snake
 
 
 class PropertyData(dict): pass
-
 class _BaseProperty:
     def __init__(self):
         self.abrv: Optional[str] = None
@@ -21,6 +28,28 @@ class _BaseProperty:
     @classmethod
     def class_name(cls) -> str:
         return camel_to_snake(cls.__name__)
+
+    def symbol(self) -> Symbol:
+        """Return a symbolic expression of this property"""
+        symbol = Symbol(f'{self.abrv}')
+        return symbol
+    
+    def get_val(self, t: int) -> Union[int, Symbol]:
+        """Get a value at a given time
+
+        Args:
+            t (int): time
+        """
+        return self._data[t]['val'] if t in self._data else self.symbol()
+    
+    def set_val(self, val: Union[str, int], t: int):
+        """Set the value at a given time for property
+
+        Args:
+            val (Union[str, int]): value
+            t (int): time
+        """
+        self._data[t] = {'val': val}
     
     @property
     def laws(self) -> Dict[str, law.Law]:
@@ -48,9 +77,33 @@ class _BaseProperty:
     def matter(self, matter: matter.Matter):
         assert isinstance(matter, matter), f"Expected matter to be a Matter, but got {type(matter)}"
         self._matter = matter
+    
+    def __repr__(self) -> str:
+        return f"{self.class_name().capitalize()}"
 
 class Property(_BaseProperty):
+    """Base class for all properties in matter"""
     pass
+
+class PropList:
+    """Holds all properties in a list"""
+    def __init__(self, props: List[Property] = None):
+        self._props: Dict[str, Property] = {}
+        
+        if props is not None:
+            for prop in props:
+                name = prop.class_name()
+                self._props[name] = prop
+    
+    @property
+    def props(self) -> Dict[str, Property]:
+        return self._props
+    
+    def __len__(self) -> int:
+        return len(self.props)
+    
+    def __iter__(self) -> Iterable[str, Property]:
+        return iter(self.props.items())
 
 class Mass(Property):
     """Mass Property"""
@@ -79,3 +132,12 @@ class Acceleration(Property):
         super().__init__()
         self.abrv = 'a'
         self.unit = Unit.ACCELERATION
+
+def create_property_belongs_to_matter(prop, law, matter):
+    assert isinstance(prop, Property) == True
+    assert isinstance(law, law.Law) == True
+    assert issubclass(matter, matter.Matter) == True
+    
+    p = prop()
+    p.add_law(law)
+    p.matter(matter)

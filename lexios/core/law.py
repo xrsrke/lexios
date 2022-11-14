@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 from abc import ABC, abstractclassmethod
-from typing import TYPE_CHECKING, Dict, List, NoReturn, Optional
+from typing import TYPE_CHECKING, Dict, List, NoReturn, Optional, Any
 
 import lexios.matter
+import lexios.core.property as prop
 from lexios.utils import camel_to_snake
 
 if TYPE_CHECKING:
@@ -30,7 +31,12 @@ class _BaseLaw(ABC):
     @props.setter
     def props(self, props: Dict):
         """Set a list of properties that belong to this law"""
-        self._props = props
+        if isinstance(props, prop.PropList):
+            for name, property in iter(props):
+                self.add_prop(name, property)
+            
+            if self.matter:
+                self.add_law_to_matter(self.matter)
         
     def get_prop(self, name: str) -> Optional[Property]:
         """Return the property of this law"""
@@ -38,7 +44,10 @@ class _BaseLaw(ABC):
         name = name.lower()
         for prop in self.props:
             if prop['prop'].class_name() == name:
-                return prop
+                return prop        
+    
+    def add_prop(self, name: str, prop: prop.Property):
+        self._props[name] = prop
     
     def add_props_to_matter(self, matter: lexios.matter.Matter):
         """Add all properties that belongs to this law to the matter
@@ -87,16 +96,26 @@ class _BaseLaw(ABC):
         raise NotImplemented(f"expr not implemented for {type(self)}")
 
 
-class Law(_BaseLaw): pass
+class Law(_BaseLaw):
+    """Base class for all laws in matter"""
+    pass
 
 class LawList:
-    def __init__(self, laws: List[Law]):
-        self._laws = laws
-    
-    def __call__(self):
-        l = {}
-        for law in self._laws:
-            name = law.class_name()
-            l[name] = law
+    """Holds all laws in a list"""
+    def __init__(self, laws: List[Law] = None):
+        self._laws: Dict[str, Law] = {}
         
-        return l
+        if laws is not None:
+            for law in laws:
+                name = law.class_name()
+                self._laws[name] = law
+    
+    @property
+    def laws(self) -> Dict[str, Law]:
+        return self._laws
+    
+    def __len__(self):
+        return len(self.laws)
+    
+    def __iter__(self):
+        return iter(self.laws.items())

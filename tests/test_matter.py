@@ -2,11 +2,13 @@ import pytest
 
 from lexios.matter import Matter, MacroMatter
 import lexios.core.law as law
-import lexios.core.property as property
+import lexios.core.property as prop
 from lexios.universe import Universe
 from lexios.unit import Unit
 from lexios.physics.newton import NewtonFirstLaw, NewtonSecondLaw
 
+def test_create_law_for_an_matter():
+    pass
 
 @pytest.mark.parametrize(
     "matter",
@@ -15,40 +17,46 @@ from lexios.physics.newton import NewtonFirstLaw, NewtonSecondLaw
         (Matter(universe=Universe())) # create matter with universe
     ]
 )
-def test_create_matter(matter):
+def test_create_matter_using_matter_class(matter):
     assert matter.props == {}
     assert matter.laws == {}
     assert matter.universe == None
 
-
 class Star(MacroMatter):
     def __init__(self):
+        super().__init__()
         self.laws = law.LawList([NewtonFirstLaw])
 
 class Earth(MacroMatter):
     def __init__(self):
+        super().__init__()
         self.laws = [NewtonFirstLaw]
         for law in self.laws:
             name = law.class_name()
             self.add_law(name, law)
-
+            
 @pytest.fixture
 def star():
     return Star()
 
+@pytest.fixture
+def earth():
+    return Earth()
+
 @pytest.mark.xfail
-def test_matter_with_law(star):
+@pytest.mark.parametrize('matter', [earth(), star()])
+def test_create_customize_macro_matter(matter):
+    
     # not implemented
-    assert star.get_law('newton_first_law') == NewtonFirstLaw
-    assert len(star.laws) == 1
-    assert star.get_prop('mass') == property.Mass
-    assert len(star.props) == 3
+    assert matter.get_law('newton_first_law') == NewtonFirstLaw
+    assert len(matter.laws) == 1
+    assert matter.get_prop('mass') == prop.Mass
+    assert len(matter.props) == 3
 
 @pytest.mark.xfail
 def test_add_law_to_matter(star):
     # not implemented
     star.add_law(NewtonSecondLaw)
-    
     assert len(star.laws)
 
 @pytest.mark.xfail

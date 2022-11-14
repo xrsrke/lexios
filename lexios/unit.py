@@ -1,16 +1,14 @@
 from enum import Enum
 from dataclasses import dataclass
 
-import pint
 import sympy.physics.units as u
 
 
-@dataclass
+@dataclass(frozen=True)
 class Unit:
     """
     Default SI Units
     """
-
     LENGTH = u.meter
     MASS = u.kilogram
     TIME = u.second
@@ -28,3 +26,16 @@ class Unit:
     """For Physics"""
     FORCE = u.force
     ACCELERATION = u.acceleration
+    VELOCITY = u.velocity
+    
+    KILOGRAM = u.kilogram
+    GRAM = u.gram
+
+def str2unit(value: str):
+    pass
+
+def convert_to(expr, target_units: Unit):
+    return u.convert_to(expr, target_units)
+
+def round():
+    pass
