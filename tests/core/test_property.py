@@ -1,6 +1,10 @@
+from __future__ import annotations
+
 import pytest
+
 import lexios.core.property as prop
 from lexios.unit import Unit
+
 
 @pytest.fixture
 def mass():
@@ -16,18 +20,18 @@ def test_create_empty_mass_property(mass):
 def test_set_val_for_property(mass):
     mass.set_val('10 kg', t=2)
     mass.set_val(12.2 * Unit.MASS, t=3)
-    
+
     mass.get_val(t=2) == Unit.MASS
     mass.get_val(t=3) == 12.2 * Unit.MASS
-    
+
 @pytest.mark.skip(reason="Will implement str2unit later")
 def test_raise_exception_when_set_val_for_property(mass):
     with pytest.raises(ValueError, contains="Value need to be integer follows by unit"):
         mass.set_val('example')
-    
+
     with pytest.raises(ValueError, contains="Need to specify time"):
         mass.set_val("10 kg")
-    
+
     with pytest.raises(ValueError, contains="Time need to be an positive integer"):
         mass.set_val("10 kg", t=-1)
 

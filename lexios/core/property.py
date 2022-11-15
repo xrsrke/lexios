@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Union
 
 import lexios.core.law as law
-from lexios import matter
+import lexios.matter as matter
 from lexios.symbolic.symbol import Symbol
 from lexios.unit import Unit
 from lexios.utils import camel_to_snake

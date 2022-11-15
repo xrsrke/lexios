@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING, Dict, List, Optional, TypedDict
 from fastcore.meta import PrePostInitMeta
 
 import lexios.core.law
+import lexios.core.property
 import lexios.universe as universe
-from lexios.core.property import Property
 
 
 class PropertyInfo(TypedDict):
@@ -15,7 +15,7 @@ class PropertyInfo(TypedDict):
 class _BaseMatter(metaclass=PrePostInitMeta):
     """A generic class for matter"""
     def __init__(self):
-        self._props: dict[str, Property] = dict()
+        self._props: dict[str, lexios.core.Property] = dict()
         self._laws: dict[str, lexios.core.law.Law] = dict()
         self._universe: universe.Universe | None = None
 
@@ -59,17 +59,17 @@ class _BaseMatter(metaclass=PrePostInitMeta):
             self.laws[name] = create_law_belongs_to_matter(law=law, matter=self)
 
     @property
-    def props(self) -> dict[str, Property]:
+    def props(self) -> dict[str, lexios.core.property.Property]:
         """Return the list of properties"""
         return self._props
 
-    def add_prop(self, prop: Property):
+    def add_prop(self, prop: lexios.core.property.Property):
         """Add a property to matter
 
         Args:
             prop (Property): property
         """
-        assert isinstance(prop, Property), f"Expected property to be a Property, but got {type(prop)}"
+        assert isinstance(prop, lexios.core.property.Property), f"Expected property to be a Property, but got {type(prop)}"
         name = prop.class_name()
         if not name in self.props:
             self.props[name] = prop
