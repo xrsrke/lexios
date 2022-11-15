@@ -87,6 +87,7 @@ class _BaseLaw(ABC):
         """Set which matter this law belongs to"""
         # assert isinstance(matter, (lexios.matter.Matter, None)), f"Expected matter to be a Matter, got {type(matter)}"
         self._matter = matter
+        # TODO: If a law belongs to some matter => move properties to that matter
 
     @classmethod
     def class_name(cls) -> str:  # return the snake style name

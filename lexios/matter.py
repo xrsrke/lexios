@@ -7,6 +7,7 @@ from fastcore.meta import PrePostInitMeta
 import lexios.core.law
 import lexios.core.property
 import lexios.universe as universe
+from lexios.system import System
 
 
 class PropertyInfo(TypedDict):
@@ -18,6 +19,7 @@ class _BaseMatter(metaclass=PrePostInitMeta):
         self._props: dict[str, lexios.core.Property] = dict()
         self._laws: dict[str, lexios.core.law.Law] = dict()
         self._universe: universe.Universe | None = None
+        self._system: System = System()
 
     # def __post_init__(self):
     #     """Automatically initialize and add laws, properties to this matter"""
@@ -74,6 +76,9 @@ class _BaseMatter(metaclass=PrePostInitMeta):
         if not name in self.props:
             self.props[name] = prop
 
+    def get_prop(self, *args, **kwargs):
+        return self.system.get_prop(*args, **kwargs, instance=self)
+
     @property
     def universe(self) -> universe.Universe | None:
         """Return the universe that this matter belongs to
@@ -87,6 +92,14 @@ class _BaseMatter(metaclass=PrePostInitMeta):
         assert isinstance(value, universe.Universe), f"Expected universe to be a Universe, got {type(universe)}"
         self._universe = value
 
+    @property
+    def system(self):
+        return self._system
+
+    @system.setter
+    def system(self, system: System):
+        assert isinstance(system, System), f"Expected system to be a System, but got {type(system)}"
+        self._system = system
 
 class Matter(_BaseMatter): pass
 
@@ -107,3 +120,6 @@ def create_law_belongs_to_matter(law, matter):
     l = law()
     l.matter = matter
     return l
+
+def add_property_to_law(prop, matter):
+    prop.matter = matter

@@ -6,10 +6,6 @@ import lexios.core.property as prop
 from lexios.unit import Unit
 
 
-@pytest.fixture
-def mass():
-    return prop.Mass()
-
 def test_create_empty_mass_property(mass):
     assert mass.abrv == 'm'
     assert repr(mass) == 'Mass'
@@ -47,9 +43,9 @@ def test_add_get_remove_value_for_property():
 # FOR TOTAL PROPERTY
 
 @pytest.fixture
-def force():
+def  force():
     force = prop.Force()
-    force.add_value('1.1 ')
+    force.add_value(11 * Unit.FORCE)
 
 def test_return_symbolic_total_property():
     pass
@@ -68,6 +64,8 @@ def empty_proplist():
 def test_create_property_list(proplist):
     assert len(proplist) == 3
     assert len(list(iter(proplist))) == 3
+    assert len(proplist.props) == 3
+    assert issubclass(proplist['force'], prop.Force)
 
 def test_create_empty_property_list(empty_proplist):
     assert len(empty_proplist) == 0

@@ -23,7 +23,7 @@ def newton_first_law():
     return NewtonFirstLaw()
 
 @pytest.mark.parametrize('law', [newton_first_law])
-def test_create_law():
+def test_create_law(law):
     assert len(law.props) == 3
 
 def test_create_law_without_property():

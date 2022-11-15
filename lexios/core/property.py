@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Union
 
 import lexios.core.law as law
-import lexios.matter as matter
+import lexios.matter
 from lexios.symbolic.symbol import Symbol
 from lexios.unit import Unit
 from lexios.utils import camel_to_snake
@@ -16,7 +16,7 @@ class _BaseProperty:
         self.unit: Unit | None = None
         self._data: PropertyData = PropertyData()
         self._laws: dict[str, law.Law] = dict()
-        self._matter: matter.Matter | None = None
+        self._matter: lexios.matter.Matter | None = None
 
     @classmethod
     def class_name(cls) -> str:
@@ -62,13 +62,13 @@ class _BaseProperty:
         pass
 
     @property
-    def matter(self) -> matter.Matter | None:
+    def matter(self) -> lexios.matter.Matter | None:
         """An property can't exists without matter."""
         return self._matter
 
     @matter.setter
-    def matter(self, matter: matter.Matter):
-        assert isinstance(matter, matter), f"Expected matter to be a Matter, but got {type(matter)}"
+    def matter(self, matter: lexios.matter.Matter):
+        assert issubclass(type(matter), lexios.matter.Matter), f"Expected matter to be a Matter, but got {type(matter)}"
         self._matter = matter
 
     def __repr__(self) -> str:
@@ -91,6 +91,11 @@ class PropList:
     @property
     def props(self) -> dict[str, Property]:
         return self._props
+
+    def __getitem__(self, k):
+        if k in self.props:
+            return self.props[k]
+        super().__getitem__(k)
 
     def __len__(self) -> int:
         return len(self.props)
@@ -129,7 +134,7 @@ class Acceleration(Property):
 def create_property_belongs_to_matter(prop, law, matter):
     assert isinstance(prop, Property) == True
     assert isinstance(law, law.Law) == True
-    assert issubclass(matter, matter.Matter) == True
+    assert issubclass(matter, lexios.matter.Matter) == True
 
     p = prop()
     p.add_law(law)
