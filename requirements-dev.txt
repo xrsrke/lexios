@@ -4,3 +4,4 @@ poetry
 pre-commit
 pylint
 pytest
+pytest-cov
