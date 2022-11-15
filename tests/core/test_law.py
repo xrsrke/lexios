@@ -1,7 +1,11 @@
+from __future__ import annotations
+
 import pytest
-from lexios.matter import MarcoMatter
-from lexios.physics.newton import NewtonFirstLaw
+
 import lexios.core.law as law
+from lexios.matter import MacroMatter
+from lexios.physics.newton import NewtonFirstLaw
+
 
 def test_law_without_expr():
     law = NewtonFirstLaw()
@@ -20,7 +24,7 @@ def newton_first_law():
 
 @pytest.mark.parametrize('law', [newton_first_law])
 def test_create_law():
-    assert len(law.props) == 3 
+    assert len(law.props) == 3
 
 def test_create_law_without_property():
     pass

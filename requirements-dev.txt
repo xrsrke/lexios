@@ -1,3 +1,5 @@
-pytest
 fastcore
 poetry
+pre-commit
+pylint
+pytest

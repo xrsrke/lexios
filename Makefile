@@ -6,6 +6,7 @@ install:
 
 install-dev:
 	pip install -r requirements-dev.txt
+	pre-commit install
 
 precommit:
 	cd docs && nbdev_export && nbdev_clean
