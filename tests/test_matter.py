@@ -44,13 +44,6 @@ def test_create_customize_macro_matter(matter):
     assert matter.get_prop('mass') == prop.Mass
     assert len(matter.props) == 3
 
-# @pytest.mark.xfail
-# def test_add_law_to_matter(star):
-#     # not implemented
-#     star.add_law(NewtonSecondLaw)
-#     assert len(star.laws)
-
-
 ################################################################
 ### TEST ADD LAW AND PROPERTY TO MATTER
 
@@ -104,19 +97,6 @@ def test_set_get_remove_value_for_property_in_matter(star):
 
 def test_symbolic_sum_of_properties():
     pass
-
-
-################################################################
-
-# def test_add_property_to_matter(mass, matter_without_law):
-#     matter_without_law.add_prop(mass)
-#     assert issubclass(type(matter_without_law.props['mass']), prop.Mass)
-
-# def test_add_property_to_matter(mass, matter_without_law):
-#     matter_without_law.add_prop(mass)
-
-#     assert matter_without_law.get_prop('mass')
-#     assert len(matter_without_law.props) == 1
 
 ##################################################################
 

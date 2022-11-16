@@ -7,12 +7,6 @@ import lexios.core.law as law
 from lexios.matter import MacroMatter
 from lexios.physics.newton import NewtonFirstLaw
 
-# def test_law_without_expr():
-#     law = NewtonFirstLaw()
-#     assert law.matter == None
-
-# def test_law_with_matter():
-#     law = NewtonFirstLaw()
 
 @pytest.mark.parametrize(
     'law, expected_n_props',
@@ -25,6 +19,7 @@ def test_create_law(law, expected_n_props):
     assert len(law.props) == expected_n_props
     assert law.matter == None
 
+##################################
 # FOR LAW LIST
 
 @pytest.fixture
