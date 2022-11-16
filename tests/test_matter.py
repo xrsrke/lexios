@@ -48,11 +48,14 @@ def test_create_customize_macro_matter(matter):
 ### TEST ADD LAW AND PROPERTY TO MATTER
 
 
+
 def test_add_law_to_matter(matter_without_law):
     matter_without_law.add_law(NewtonFirstLaw)
 
     assert len(matter_without_law.laws) == 1
+    assert isinstance(matter_without_law.laws['newton_first_law'], NewtonFirstLaw)
     assert len(matter_without_law.props) == 3
+    assert isinstance(matter_without_law.props['mass'], prop.Mass)
 
 @pytest.mark.xfail
 def test_remove_law_from_matter(star):
