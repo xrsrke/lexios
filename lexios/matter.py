@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, List, Optional, TypedDict
+from typing import TYPE_CHECKING, Dict, List, Optional, TypedDict, Union
 
 from fastcore.meta import PrePostInitMeta
 
@@ -55,10 +55,7 @@ class _BaseMatter(metaclass=PrePostInitMeta):
         Args:
             law (Law): A law
         """
-        assert issubclass(law, lexios.core.law.Law), f"Expected law to be a Law, got {type(law)}"
-        name = law.class_name()
-        if not name in self.laws:
-            self.laws[name] = create_law_belongs_to_matter(law=law, matter=self)
+        MatterCreator.add_law_to_matter(law, matter=self)
 
     @property
     def props(self) -> dict[str, lexios.core.property.Property]:
@@ -71,10 +68,7 @@ class _BaseMatter(metaclass=PrePostInitMeta):
         Args:
             prop (Property): property
         """
-        assert isinstance(prop, lexios.core.property.Property), f"Expected property to be a Property, but got {type(prop)}"
-        name = prop.class_name()
-        if not name in self.props:
-            self.props[name] = prop
+        MatterCreator.add_prop_to_matter(prop, matter=self)
 
     def get_prop(self, *args, **kwargs):
         return self.system.get_prop(*args, **kwargs, instance=self)
@@ -121,5 +115,48 @@ def create_law_belongs_to_matter(law, matter):
     l.matter = matter
     return l
 
-def add_property_to_law(prop, matter):
-    prop.matter = matter
+class MatterCreator():
+    # def __init__(self, laws: lexios.core.law.LawList, matter: Matter):
+    #     self.laws = laws
+    #     self.matter = matter
+
+    @classmethod
+    def add_laws_to_matter(cls, laws: lexios.core.law.Law, matter: Matter):
+        """Add all the laws to matter."""
+        for law in laws:
+            law.matter = matter
+            # matter.add_properties_in_law_to_matter()
+            # matter.add_law()
+
+    @classmethod
+    def add_law_to_matter(cls, law, matter):
+        # assert issubclass(law, lexios.core.law.Law), f"Expected law to be a Law, got {type(law)}"
+
+        name = law.class_name()
+        if not name in matter.laws:
+            law_instance = law if isinstance(law, lexios.core.law.Law) else law()
+            # TODO: do't call ._matter directly
+            law_instance._matter = matter
+            matter.laws[name] = law_instance
+
+            for name, prop in law_instance.props.items():
+                MatterCreator.add_prop_to_matter(prop, matter)
+
+    # @classmethod
+    # def add_properties_in_law_to_matter(self, law):
+    #     """Add all the properties in a law to matter."""
+    #     for prop in law.properties:
+    #         if prop.class_name not in self.matter.props:
+    #             self.matter.add_prop(prop)
+
+    @classmethod
+    def add_prop_to_matter(cls, prop, matter):
+        # assert issubclass(type(prop), lexios.core.property.Property), f"Expected property to be a Property, but got {type(prop)}"
+
+        name = prop.class_name()
+        if not name in matter.props:
+            prop_instance = prop if isinstance(prop, lexios.core.property.Property) else prop()
+            matter.props[name] = prop_instance
+
+    # def initialize_law(self):
+    #     pass

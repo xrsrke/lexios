@@ -10,6 +10,8 @@ from lexios.system import System
 from lexios.unit import Unit
 from lexios.universe import Universe
 
+################################################################
+### TEST CREATE MATTER
 
 def test_create_law_for_an_matter():
     pass
@@ -21,16 +23,16 @@ def test_create_law_for_an_matter():
         # (Matter(universe=Universe())) # create matter with universe
     ]
 )
-def test_create_matter_using_matter_class(matter):
+def test_create_matter_without_law(matter):
     assert matter.props == {}
     assert matter.laws == {}
     assert matter.universe == None
     assert isinstance(matter.system, System)
 
+@pytest.mark.xfail
 def test_create_matter_that_already_have_law(matter_with_lawlist):
     assert len(matter_with_lawlist.props) == 3
     assert len(matter_with_lawlist.laws) == 1
-
 
 @pytest.mark.xfail
 # @pytest.mark.parametrize('matter', [earth, star])
@@ -48,12 +50,36 @@ def test_create_customize_macro_matter(matter):
 #     star.add_law(NewtonSecondLaw)
 #     assert len(star.laws)
 
+
+################################################################
+### TEST ADD LAW AND PROPERTY TO MATTER
+
+
+def test_add_law_to_matter(matter_without_law):
+    matter_without_law.add_law(NewtonFirstLaw)
+
+    assert len(matter_without_law.laws) == 1
+    assert len(matter_without_law.props) == 3
+
 @pytest.mark.xfail
 def test_remove_law_from_matter(star):
     # not implemented
     star.remove_law(NewtonFirstLaw)
     assert len(star.laws) == 0
     assert len(star.props) == 0
+
+def test_add_prop_class_to_matter(matter_without_law):
+    matter_without_law.add_prop(prop.Mass)
+
+    assert len(matter_without_law.laws) == 0
+    assert len(matter_without_law.props) == 1
+
+def test_add_prop_instance_to_matter(matter_without_law, mass):
+    matter_without_law.add_prop(mass)
+
+    assert len(matter_without_law.laws) == 0
+    assert len(matter_without_law.props) == 1
+
 
 @pytest.mark.xfail
 def test_set_get_remove_value_for_property_in_matter(star):
@@ -86,22 +112,19 @@ def test_symbolic_sum_of_properties():
 #     matter_without_law.add_prop(mass)
 #     assert issubclass(type(matter_without_law.props['mass']), prop.Mass)
 
-def test_add_property_to_matter(mass, matter_without_law):
-    matter_without_law.add_prop(mass)
+# def test_add_property_to_matter(mass, matter_without_law):
+#     matter_without_law.add_prop(mass)
 
-    assert matter_without_law.get_prop('mass')
-    assert len(matter_without_law.props) == 1
-
-def test_add_law_to_matter():
-    pass
+#     assert matter_without_law.get_prop('mass')
+#     assert len(matter_without_law.props) == 1
 
 ##################################################################
 
 def test_add_get_property_of_matter_from_system(matter_with_lawlist):
     matter_with_lawlist.set_prop('mass', 28 * Unit.KILOGRAM, t=3)
+
     assert matter_with_lawlist.get_prop('mass', t=3) == 28 * Unit.KILOGRAM
 
     matter_with_lawlist.set_prop('mass', None, t=3)
     assert matter_with_lawlist.get_prop('mass', t=3) == None
-
     assert matter_with_lawlist.get_prop('mass', t=9) == None

@@ -9,11 +9,12 @@ class NewtonFirstLaw(Law):
     """Newton First Law of Motion"""
     def __init__(self):
         super().__init__()
-        self.props = [
-            {'prop': Force},
-            {'prop': Mass},
-            {'prop': Acceleration}
-        ]
+        # self.props = [
+        #     {'prop': Force},
+        #     {'prop': Mass},
+        #     {'prop': Acceleration}
+        # ]
+        self.props = prop.PropList([prop.Force, prop.Mass, prop.Acceleration])
 
     def expr(self): pass
 

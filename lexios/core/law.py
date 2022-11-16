@@ -40,8 +40,8 @@ class _BaseLaw(ABC):
             for name, property in iter(props):
                 self.add_prop(name, property)
 
-            if self.matter:
-                self.add_law_to_matter(self.matter)
+            # if self.matter:
+            #     self.add_law_to_matter(self.matter)
 
     def get_prop(self, name: str) -> Property | None:
         """Return the property of this law"""
@@ -87,6 +87,7 @@ class _BaseLaw(ABC):
         """Set which matter this law belongs to"""
         # assert isinstance(matter, (lexios.matter.Matter, None)), f"Expected matter to be a Matter, got {type(matter)}"
         self._matter = matter
+        # self.add_law_to_matter(matter)
         # TODO: If a law belongs to some matter => move properties to that matter
 
     @classmethod

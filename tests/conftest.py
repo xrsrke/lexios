@@ -11,6 +11,26 @@ import lexios.system as system
 from lexios.physics.newton import NewtonFirstLaw
 
 
+class LawWithoutProperty(law.Law):
+    def __init__(self):
+        super().__init__()
+
+    def expr(self): pass
+class LawWithProperty(law.Law):
+    def __init__(self):
+        super().__init__()
+        self.props = prop.PropList([prop.Mass, prop.Mole, prop.Force])
+
+    def expr(self): pass
+
+@pytest.fixture
+def law_without_property():
+    return LawWithoutProperty()
+
+@pytest.fixture
+def law_with_property():
+    return LawWithProperty()
+
 class MatterWithoutLaw(matter.MacroMatter):
     def __init__(self):
         super().__init__()

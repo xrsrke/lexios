@@ -1,33 +1,29 @@
 from __future__ import annotations
 
 import pytest
+from pytest_lazyfixture import lazy_fixture
 
 import lexios.core.law as law
 from lexios.matter import MacroMatter
 from lexios.physics.newton import NewtonFirstLaw
 
+# def test_law_without_expr():
+#     law = NewtonFirstLaw()
+#     assert law.matter == None
 
-def test_law_without_expr():
-    law = NewtonFirstLaw()
+# def test_law_with_matter():
+#     law = NewtonFirstLaw()
+
+@pytest.mark.parametrize(
+    'law, expected_n_props',
+    [
+        (lazy_fixture('law_with_property'), 3),
+        (lazy_fixture('law_without_property'), 0)
+    ]
+)
+def test_create_law(law, expected_n_props):
+    assert len(law.props) == expected_n_props
     assert law.matter == None
-
-def test_law_with_matter():
-    law = NewtonFirstLaw()
-
-@pytest.fixture
-def law_without_property():
-    pass
-
-@pytest.fixture
-def newton_first_law():
-    return NewtonFirstLaw()
-
-@pytest.mark.parametrize('law', [newton_first_law])
-def test_create_law(law):
-    assert len(law.props) == 3
-
-def test_create_law_without_property():
-    pass
 
 # FOR LAW LIST
 
@@ -44,7 +40,3 @@ def test_add_an_law_to_lawlist(law_list):
 
 def test_remove_an_law_from_lawlist(law_list):
     pass
-
-def test_create_property_list(prop_list):
-    assert len(prop_list) == 3
-    assert len(list(iter(prop_list))) == 3

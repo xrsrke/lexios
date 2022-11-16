@@ -1,5 +1,5 @@
 test:
-	pytest . -v
+	pytest ./tests --cov
 
 install:
 	pip install -r requirements.txt
