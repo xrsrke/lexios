@@ -87,7 +87,7 @@ class _BaseMatter(metaclass=PrePostInitMeta):
         self._universe = value
 
     @property
-    def system(self):
+    def system(self) -> System | None:
         return self._system
 
     @system.setter
@@ -127,6 +127,9 @@ class MatterCreator():
             law.matter = matter
             # matter.add_properties_in_law_to_matter()
             # matter.add_law()
+
+    def create_instance_from_class(self):
+        pass
 
     @classmethod
     def add_law_to_matter(cls, law, matter):

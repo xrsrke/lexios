@@ -1,27 +1,25 @@
 from __future__ import annotations
 
 from abc import ABC, abstractclassmethod
-from typing import (
-    TYPE_CHECKING,
-    Dict,
-    Optional,
-)
-
+from typing import TYPE_CHECKING, Dict, Optional
 
 if TYPE_CHECKING:
     from lexios.core.law import Law
+    from lexios.core.property import Property
 
 
 class _BaseUniverse:
     def __init__(self):
-        self._laws: Optional[Dict[str, Law]] = None
-    
+        self._props: dict[str, Property] | None = {}
+        self._laws: dict[str, Law] | None = {}
+
     @property
-    def laws(self) -> Optional[Dict[str, Law]]:
+    def props(self) -> dict[str, Property] | None:
+        return self._props
+
+    @property
+    def laws(self) -> dict[str, Law] | None:
         return self._laws
 
 
 class Universe(_BaseUniverse): pass
-
-
-class OurUniverse(Universe): pass

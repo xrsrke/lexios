@@ -23,15 +23,31 @@ def test_create_law(law, expected_n_props):
 # FOR LAW LIST
 
 @pytest.fixture
-def law_list():
+def nonempty_law_list():
+    laws = [NewtonFirstLaw]
+    return law.LawList(laws)
+
+@pytest.fixture
+def empty_law_list():
     laws = []
     return law.LawList(laws)
 
-def test_create_law_list(law_list):
-    assert len(law_list) == 3
+# @pytest.mark.parametrize(
+#     'law_list, expected_n_laws',
+#     [
+#         (lazy_fixture('nonempty_law_list'), 1),
+#         (lazy_fixture('empty_law_list'), 0)
+#     ]
+# )
+def test_create_empty_law_list(empty_law_list):
+    assert len(empty_law_list.laws) == 0
 
-def test_add_an_law_to_lawlist(law_list):
-    pass
+def test_create_nonempty_law_list(nonempty_law_list):
+    assert len(nonempty_law_list.laws) == 1
+    assert issubclass(nonempty_law_list.laws['newton_first_law'], NewtonFirstLaw)
 
-def test_remove_an_law_from_lawlist(law_list):
-    pass
+# def test_add_an_law_to_lawlist(law_list):
+#     pass
+
+# def test_remove_an_law_from_lawlist(law_list):
+#     pass

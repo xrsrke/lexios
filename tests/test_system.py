@@ -4,7 +4,7 @@ import pytest
 
 
 def test_create_system(system):
-    pass
+    assert system._states['x'] == 1
 
 def test_add_matter_to_system(matter_with_lawlist, system):
     matter_with_lawlist.system = system

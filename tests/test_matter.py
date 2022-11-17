@@ -16,6 +16,18 @@ from lexios.universe import Universe
 def test_create_law_for_an_matter():
     pass
 
+def assertMatter(
+    matter, *,
+    expected_n_props, expected_n_laws,
+    expected_universe
+):
+    """Expected information about matter"""
+
+    assert len(matter.props) == expected_n_props
+    assert len(matter.laws) == expected_n_laws
+    assert matter.system != None
+    assert matter.universe
+
 @pytest.mark.parametrize(
     "matter",
     [

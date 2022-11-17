@@ -6,3 +6,4 @@ pylint
 pytest
 pytest-cov
 pytest-lazy-fixture
+tox
