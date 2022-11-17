@@ -3,6 +3,7 @@ from __future__ import annotations
 import pytest
 
 import lexios.core.property as prop
+from lexios.symbolic.symbol import Symbol
 from lexios.unit import Unit
 
 
@@ -12,6 +13,8 @@ def test_create_empty_mass_property(mass):
     assert mass.unit == Unit.MASS
     assert mass.matter == None
     assert mass.laws == {}
+    assert isinstance(mass.symbol(t=3), Symbol)
+    assert isinstance(mass(t=3), Symbol)
 
 def test_set_val_for_property(mass):
     mass.set_val('10 kg', t=2)
@@ -43,7 +46,7 @@ def test_add_get_remove_value_for_property():
 # FOR TOTAL PROPERTY
 
 @pytest.fixture
-def  force():
+def force():
     force = prop.Force()
     force.add_value(11 * Unit.FORCE)
 

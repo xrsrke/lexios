@@ -6,9 +6,9 @@ import lexios.core.law as law
 import lexios.core.property as prop
 from lexios.matter import MacroMatter, Matter
 from lexios.physics.newton import NewtonFirstLaw
+from lexios.symbolic.symbol import Symbol
 from lexios.system import System
 from lexios.unit import Unit
-from lexios.universe import Universe
 
 ################################################################
 ### TEST CREATE MATTER
@@ -43,8 +43,12 @@ def test_create_matter_without_law(matter):
 
 @pytest.mark.xfail
 def test_create_matter_that_already_have_law(matter_with_lawlist):
+
     assert len(matter_with_lawlist.props) == 3
     assert len(matter_with_lawlist.laws) == 1
+
+    matter = matter_with_lawlist.matter
+    assert matter_with_lawlist.props['force'].matter == matter
 
 @pytest.mark.xfail
 # @pytest.mark.parametrize('matter', [earth, star])
@@ -115,11 +119,22 @@ def test_symbolic_sum_of_properties():
 
 ##################################################################
 
-def test_add_get_property_of_matter_from_system(matter_with_lawlist):
-    matter_with_lawlist.set_prop('mass', 28 * Unit.KILOGRAM, t=3)
+def test_get_empty_property_of_matter(matter_with_lawlist):
+    assert isinstance(matter_with_lawlist.get_prop('mass', t=3), Symbol)
+    assert isinstance(matter_with_lawlist.get_prop('mass', t=3, eval=True), Symbol)
 
-    assert matter_with_lawlist.get_prop('mass', t=3) == 28 * Unit.KILOGRAM
 
-    matter_with_lawlist.set_prop('mass', None, t=3)
-    assert matter_with_lawlist.get_prop('mass', t=3) == None
-    assert matter_with_lawlist.get_prop('mass', t=9) == None
+def test_add_property_of_matter(matter_with_lawlist):
+
+    value = 28 * Unit.KILOGRAM
+    matter_with_lawlist.set_prop('mass', val=value, t=3)
+    assert isinstance(matter_with_lawlist.get_prop('mass', t=3), Symbol)
+    assert matter_with_lawlist.get_prop('mass', t=3, eval=True) == value
+
+def test_set_none_value_to_property_of_matter(matter_with_lawlist):
+    matter_with_lawlist.set_prop('mass', val=None, t=3)
+    assert isinstance(matter_with_lawlist.get_prop('mass', t=3), Symbol)
+    assert matter_with_lawlist.get_prop('mass', t=3, eval=True) == None
+
+def test_get_law_of_matter():
+    pass

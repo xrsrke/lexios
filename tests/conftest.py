@@ -7,10 +7,10 @@ import pytest
 import lexios.core.law as law
 import lexios.core.property as prop
 import lexios.matter as matter
-from lexios.physics.newton import NewtonFirstLaw
 # import lexios.system as system
-from lexios.system import System
-from lexios.universe import Universe
+import lexios.system
+import lexios.universe
+from lexios.physics.newton import NewtonFirstLaw
 
 
 class LawWithoutProperty(law.Law):
@@ -72,7 +72,7 @@ def matter_with_law():
 
 @pytest.fixture
 def system():
-    return System()
+    return lexios.system.System()
 
 
 ################################################################
@@ -80,10 +80,10 @@ def system():
 
 @pytest.fixture
 def universe():
-    return Universe()
+    return lexios.universe.Universe()
 
-class OurUniverse(Universe):
-    pass
+# class OurUniverse(Universe):
+#     pass
 
-def our_universe():
-    pass
+# def our_universe():
+#     pass

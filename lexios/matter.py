@@ -70,8 +70,20 @@ class _BaseMatter(metaclass=PrePostInitMeta):
         """
         MatterCreator.add_prop_to_matter(prop, matter=self)
 
-    def get_prop(self, *args, **kwargs):
-        return self.system.get_prop(*args, **kwargs, instance=self)
+    def get_prop(self, name: str, t: int, **kwargs):
+        """Get property value
+
+        Args:
+            name (str): name of the property
+            t (int): time
+
+        Returns:
+            _type_: _description_
+        """
+        return self.system.get_prop(name, t, instance=self, **kwargs)
+
+    def set_prop(self, name: str, val: int | float, t: int, **kwargs):
+        return self.system.set_prop(name, val, t, instance=self, **kwargs)
 
     @property
     def universe(self) -> universe.Universe | None:
@@ -159,6 +171,8 @@ class MatterCreator():
         name = prop.class_name()
         if not name in matter.props:
             prop_instance = prop if isinstance(prop, lexios.core.property.Property) else prop()
+            # TODO: all the logic in this function should be replace by prop.matter = matter
+            prop_instance.matter = matter
             matter.props[name] = prop_instance
 
     # def initialize_law(self):

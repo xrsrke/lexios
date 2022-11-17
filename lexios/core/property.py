@@ -22,9 +22,13 @@ class _BaseProperty:
     def class_name(cls) -> str:
         return camel_to_snake(cls.__name__)
 
-    def symbol(self) -> Symbol:
+    def symbol(self, t: int) -> Symbol:
         """Return a symbolic expression of this property"""
-        symbol = Symbol(f'{self.abrv}')
+        symbol = Symbol(f"{self.abrv}_{t}")
+        symbol.set_state('t', t)
+        symbol.set_state('name', self.class_name)
+        symbol.set_state('matter', self.matter)
+
         return symbol
 
     def get_val(self, t: int) -> int | Symbol:
@@ -33,7 +37,7 @@ class _BaseProperty:
         Args:
             t (int): time
         """
-        return self._data[t]['val'] if t in self._data else self.symbol()
+        return self._data[t]['val'] if t in self._data else self.symbol(t)
 
     def set_val(self, val: str | int, t: int):
         """Set the value at a given time for property
@@ -70,6 +74,13 @@ class _BaseProperty:
     def matter(self, matter: lexios.matter.Matter):
         assert issubclass(type(matter), lexios.matter.Matter), f"Expected matter to be a Matter, but got {type(matter)}"
         self._matter = matter
+
+    def __call__(self, t: int, **kwargs):
+        kwargs = kwargs
+        if 'eval' in kwargs and kwargs['eval'] == True:
+            return self.get_val(t)
+        else:
+            return self.symbol(t)
 
     def __repr__(self) -> str:
         return f"{self.class_name().capitalize()}"
