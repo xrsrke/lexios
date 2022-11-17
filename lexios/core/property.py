@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Union
 import lexios.core.law as law
 import lexios.matter
 from lexios.symbolic.symbol import Symbol
+from lexios.typing import TimeType
 from lexios.unit import Unit
 from lexios.utils import camel_to_snake
 
@@ -22,16 +23,27 @@ class _BaseProperty:
     def class_name(cls) -> str:
         return camel_to_snake(cls.__name__)
 
-    def symbol(self, t: int) -> Symbol:
+    def symbol(self, t: int | float | tuple) -> Symbol | int | float:
         """Return a symbolic expression of this property"""
-        symbol = Symbol(f"{self.abrv}_{t}")
+        assert isinstance(t, (tuple, float, tuple)), f"Expected {t} to be an integer, float or tuple (eg: (1, 2)) but got {type(t)}"
+        assert isinstance(t[0], (int, float))
+        assert isinstance(t[1], (int, float))
+
+        if isinstance(t, (int, float)):
+            expr = f"{self.abrv}_{t}"
+        elif isinstance(t, tuple):
+            assert len(t) == 2, "Expected 2 arguments, one for start time and one for end time"
+            expr = fr'\Delta {self.abrv}_{t[0]},{t[1]}'
+
+        symbol = Symbol(expr)
         symbol.set_state('t', t)
-        symbol.set_state('name', self.class_name)
+        symbol.set_state('name', self.class_name())
+        symbol.set_state('type', 'prop')
         symbol.set_state('matter', self.matter)
 
         return symbol
 
-    def get_val(self, t: int) -> int | Symbol:
+    def get_val(self, t: TimeType) -> int | Symbol:
         """Get a value at a given time
 
         Args:
@@ -39,7 +51,7 @@ class _BaseProperty:
         """
         return self._data[t]['val'] if t in self._data else self.symbol(t)
 
-    def set_val(self, val: str | int, t: int):
+    def set_val(self, val: str | int, t: TimeType):
         """Set the value at a given time for property
 
         Args:
@@ -75,7 +87,7 @@ class _BaseProperty:
         assert issubclass(type(matter), lexios.matter.Matter), f"Expected matter to be a Matter, but got {type(matter)}"
         self._matter = matter
 
-    def __call__(self, t: int, **kwargs):
+    def __call__(self, t: TimeType, **kwargs):
         kwargs = kwargs
         if 'eval' in kwargs and kwargs['eval'] == True:
             return self.get_val(t)

@@ -1,2 +1,5 @@
-from lexios.core.law import Law
-from lexios.core.property import Property
+from __future__ import annotations
+
+from typing import Union
+
+TimeType = Union[int, float, tuple]

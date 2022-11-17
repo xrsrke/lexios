@@ -43,16 +43,31 @@ def test_remove_value_that_not_exist_for_property():
 def test_add_get_remove_value_for_property():
     pass
 
+
+################################################################
 # FOR TOTAL PROPERTY
 
 @pytest.fixture
-def force():
+def force_with_value():
     force = prop.Force()
-    force.add_value(11 * Unit.FORCE)
+    force.add_val(10 * Unit.NEWTON, t=1)
+    force.add_val(30 * Unit.NEWTON, t=2)
+    return force
 
-def test_return_symbolic_total_property():
-    pass
+def test_create_empty_symbolic_total_property(mass):
+    assert isinstance(mass(t=(1, 2)), Symbol)
+    assert isinstance(mass(t=(1, 2), eval=True), Symbol)
 
+def test_create_nonempty_symbolic_total_property(force_with_value):
+    assert isinstance(force_with_value(t=(1, 2)), Symbol)
+
+    assert force_with_value(t=(1, 2), eval=True) == 20 * Unit.NEWTON
+    assert force_with_value.get_val(t=(2, 1), eval=True) == 20 * Unit.NEWTON
+
+    assert force_with_value(t=(1, 2)).get_state('t_start') == 1
+    assert force_with_value(t=(1, 2)).get_state('t_end') == 2
+
+################################################################
 # FOR PROPERTY LIST
 
 @pytest.fixture

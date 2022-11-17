@@ -119,13 +119,13 @@ class NanoMatter(_BaseMatter):
     pass
 
 
-def create_law_belongs_to_matter(law, matter):
-    assert issubclass(law, lexios.core.law.Law) == True
-    assert isinstance(matter, Matter) == True
+# def create_law_belongs_to_matter(law, matter):
+#     assert issubclass(law, lexios.core.law.Law) == True
+#     assert isinstance(matter, Matter) == True
 
-    l = law()
-    l.matter = matter
-    return l
+#     l = law()
+#     l.matter = matter
+#     return l
 
 class MatterCreator():
     # def __init__(self, laws: lexios.core.law.LawList, matter: Matter):

@@ -7,7 +7,6 @@ from fastcore.meta import PrePostInitMeta
 import lexios.core.law as law
 import lexios.matter as matter
 
-# import lexios.core.laws as law
 
 class _BaseSystem(metaclass=PrePostInitMeta):
     pass
