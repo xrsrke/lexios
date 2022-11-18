@@ -129,7 +129,10 @@ dmypy.json
 .pyre/
 
 
-# ignore notebook drafts
+# Ignore notebook drafts
 nbs/*
 *.ipynb
 reports/*
+
+# Ignore vscode's settings
+.vscode
