@@ -23,9 +23,9 @@ class _BaseMatter(metaclass=PrePostInitMeta):
 
     def __init__(self):
         """Initialize a matter."""
-        self._props: dict[str, lexios.core.Property] = dict()
-        self._laws: dict[str, lexios.core.law.Law] = dict()
-        self._universe: universe.Universe | None = None
+        self._props: Dict[str, lexios.core.property.Property] = dict()
+        self._laws: Dict[str, lexios.core.law.Law] = dict()
+        self._universe: Optional[universe.Universe] = None
         self._system: System = System()
 
     # def __post_init__(self):
@@ -39,7 +39,7 @@ class _BaseMatter(metaclass=PrePostInitMeta):
     #             self.add_law(law)
 
     @property
-    def laws(self) -> dict[str, lexios.core.law.Law]:
+    def laws(self) -> Dict[str, lexios.core.law.Law]:
         """Return the list of laws that this matter obeys to.
 
         Returns:

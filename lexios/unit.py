@@ -37,9 +37,9 @@ def str2unit(value: str):
     pass
 
 
-def convert_to(expr, target_units: Unit):
+def unit_convert(quantity, target_units: Unit):
     """A function convert between units."""
-    return u.convert_to(expr, target_units)
+    return u.convert_to(quantity, target_units)
 
 
 def round():

@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-from fastcore.basics import class2attr
-from fastcore.foundation import L
+from fastcore.basics import GetAttr, Stateful, class2attr
+
+# from fastcore.foundation import L
 from fastcore.meta import funcs_kwargs
 
 _events = [
@@ -25,12 +26,13 @@ _events = [
 
 
 @funcs_kwargs(as_method=True)
-class Callback:
+class Callback(Stateful, GetAttr):
     """A base class for create new callback."""
 
     _methods = _events
+    _default = "law"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """repr."""
         return type(self).__name__
 
