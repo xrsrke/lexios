@@ -1,20 +1,23 @@
+"""A list of utility functions."""
+
 from __future__ import annotations
 
 import re
 
-SUB = str.maketrans("0123456789", "₀₁₂₃₄₅₆₇₈₉")
-REV_SUB = str.maketrans("₀₁₂₃₄₅₆₇₈₉", "0123456789")
+_SUB = str.maketrans("0123456789", "₀₁₂₃₄₅₆₇₈₉")
+_REV_SUB = str.maketrans("₀₁₂₃₄₅₆₇₈₉", "0123456789")
 
 
 def camel_to_snake(
-    name: str,  # the string that you want to convert
+    text: str,  # the string that you want to convert
 ) -> str:  # converted string
-    name = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", name)
-    return re.sub("([a-z0-9])([A-Z])", r"\1_\2", name).lower()
+    """Convert a string to snake style."""
+    snake_text = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", text)
+    return snake_text.lower()
 
 
 def str2fml(x: str) -> str:
-    """Turn a string to a chemical formula
+    """Turn a string to a chemical formula.
 
     Args:
         x (str): string
@@ -22,8 +25,9 @@ def str2fml(x: str) -> str:
     Returns:
         str: string
     """
-    return x.translate(SUB)
+    return x.translate(_SUB)
 
 
 def fml2str(x: str) -> str:
-    return x.translate(REV_SUB)
+    """Convert Unicode chemical formula to string."""
+    return x.translate(_REV_SUB)

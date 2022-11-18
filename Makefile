@@ -1,5 +1,5 @@
 test:
-	pytest ./tests --cov
+	pytest ./tests --cov --diff-width=60
 
 install:
 	pip install -r requirements.txt

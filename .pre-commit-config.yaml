@@ -1,60 +1,116 @@
-ci:
-  autoupdate_commit_msg: "chore: update pre-commit hooks"
-  autofix_commit_msg: "style: pre-commit fixes"
+# ci:
+#   autoupdate_commit_msg: "chore: update pre-commit hooks"
+#   autofix_commit_msg: "style: pre-commit fixes"
 
+# repos:
+#   - repo: https://github.com/pre-commit/pre-commit-hooks
+#     rev: v4.1.0
+#     hooks:
+#       - id: check-added-large-files
+#       - id: check-case-conflict
+#       - id: check-merge-conflict
+#       - id: check-symlinks
+#       - id: check-yaml
+#       - id: debug-statements
+#       - id: end-of-file-fixer
+#       - id: mixed-line-ending
+#       - id: requirements-txt-fixer
+#       - id: trailing-whitespace
+
+#   - repo: https://github.com/PyCQA/isort
+#     rev: 5.10.1
+#     hooks:
+#       - id: isort
+#         args: ["-a", "from __future__ import annotations"]
+
+#   - repo: https://github.com/asottile/pyupgrade
+#     rev: v2.31.0
+#     hooks:
+#       - id: pyupgrade
+#         args: [--py37-plus]
+
+#   - repo: https://github.com/hadialqattan/pycln
+#     rev: v1.2.5
+#     hooks:
+#       - id: pycln
+#         args: [--config=pyproject.toml]
+#         stages: [manual]
+
+#   - repo: https://github.com/codespell-project/codespell
+#     rev: v2.1.0
+#     hooks:
+#       - id: codespell
+
+#   - repo: https://github.com/pre-commit/pygrep-hooks
+#     rev: v1.9.0
+#     hooks:
+#       - id: python-check-blanket-noqa
+#       # - id: python-check-blanket-type-ignore
+#       - id: python-no-log-warn
+#       - id: python-no-eval
+#       # - id: python-use-type-annotations
+#       - id: rst-backticks
+#       - id: rst-directive-colons
+#       - id: rst-inline-touching-normal
+
+#   - repo: https://github.com/mgedmin/check-manifest
+#     rev: "0.47"
+#     hooks:
+#       - id: check-manifest
+#         stages: [manual]
+---
 repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.1.0
+  - repo: https://github.com/python/black
+    rev: 22.3.0
     hooks:
-      - id: check-added-large-files
-      - id: check-case-conflict
-      - id: check-merge-conflict
-      - id: check-symlinks
-      - id: check-yaml
-      - id: debug-statements
-      - id: end-of-file-fixer
-      - id: mixed-line-ending
-      - id: requirements-txt-fixer
-      - id: trailing-whitespace
-
-  - repo: https://github.com/PyCQA/isort
-    rev: 5.10.1
-    hooks:
-      - id: isort
-        args: ["-a", "from __future__ import annotations"]
-
-  - repo: https://github.com/asottile/pyupgrade
-    rev: v2.31.0
-    hooks:
-      - id: pyupgrade
-        args: [--py37-plus]
-
-  - repo: https://github.com/hadialqattan/pycln
-    rev: v1.2.5
-    hooks:
-      - id: pycln
-        args: [--config=pyproject.toml]
-        stages: [manual]
-
+      - id: black
   - repo: https://github.com/codespell-project/codespell
     rev: v2.1.0
     hooks:
       - id: codespell
-
-  - repo: https://github.com/pre-commit/pygrep-hooks
-    rev: v1.9.0
+        args:
+          - --ignore-words-list=nd,reacher,thist,ths, ure, referenc
+  - repo: https://github.com/PyCQA/flake8
+    rev: 4.0.1
     hooks:
-      - id: python-check-blanket-noqa
-      - id: python-check-blanket-type-ignore
-      - id: python-no-log-warn
-      - id: python-no-eval
-      - id: python-use-type-annotations
-      - id: rst-backticks
-      - id: rst-directive-colons
-      - id: rst-inline-touching-normal
-
-  - repo: https://github.com/mgedmin/check-manifest
-    rev: "0.47"
+      - id: flake8
+        args:
+          - '--per-file-ignores=*/__init__.py:F401 gym/envs/registration.py:E704'
+          - --exclude=docs/lexios/*.py
+          - --ignore=E203,W503,E741
+          - --max-complexity=30
+          - --max-line-length=456
+          - --show-source
+          - --statistics
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.10.1
     hooks:
-      - id: check-manifest
-        stages: [manual]
+      - id: isort
+        args: ["--profile", "black"]
+  - repo: https://github.com/pycqa/pydocstyle
+    rev: 6.1.1  # pick a git hash / tag to point to
+    hooks:
+      - id: pydocstyle
+        exclude: ^(tests/)|(docs/)
+        args:
+          - --source
+          - --explain
+          - --convention=google
+        additional_dependencies: ["toml"]
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v2.32.0
+    hooks:
+      - id: pyupgrade
+        # TODO: remove `--keep-runtime-typing` option
+        args: ["--py36-plus", "--keep-runtime-typing"]
+  - repo: local
+    hooks:
+      - id: pyright
+        name: pyright
+        entry: pyright
+        language: node
+        pass_filenames: false
+        types: [python]
+        additional_dependencies: ["pyright"]
+        args:
+          - --project=pyproject.toml

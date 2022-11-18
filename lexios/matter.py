@@ -1,3 +1,5 @@
+"""Implementation of Matter class."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Dict, List, Optional, TypedDict, Union
@@ -11,11 +13,16 @@ from lexios.system import System
 
 
 class PropertyInfo(TypedDict):
+    """An object that store data of an property."""
+
     pass
 
+
 class _BaseMatter(metaclass=PrePostInitMeta):
-    """A generic class for matter"""
+    """A generic class for matter."""
+
     def __init__(self):
+        """Initialize a matter."""
         self._props: dict[str, lexios.core.Property] = dict()
         self._laws: dict[str, lexios.core.law.Law] = dict()
         self._universe: universe.Universe | None = None
@@ -33,7 +40,7 @@ class _BaseMatter(metaclass=PrePostInitMeta):
 
     @property
     def laws(self) -> dict[str, lexios.core.law.Law]:
-        """Return the list of laws that this matter obeys to
+        """Return the list of laws that this matter obeys to.
 
         Returns:
             _type_: _description_
@@ -42,6 +49,7 @@ class _BaseMatter(metaclass=PrePostInitMeta):
 
     @laws.setter
     def laws(self, laws: list[lexios.core.law.Law]):
+        """Add a list of laws to this matter."""
         # if isinstance(laws, lexios.core.law.LawList):
         #     self._laws = laws.laws
         if isinstance(laws, lexios.core.law.LawList):
@@ -50,7 +58,7 @@ class _BaseMatter(metaclass=PrePostInitMeta):
                 self.add_law(law_class)
 
     def add_law(self, law: lexios.core.law.Law):
-        """Add a law class to this matter
+        """Add a law class to this matter.
 
         Args:
             law (Law): A law
@@ -59,11 +67,11 @@ class _BaseMatter(metaclass=PrePostInitMeta):
 
     @property
     def props(self) -> dict[str, lexios.core.property.Property]:
-        """Return the list of properties"""
+        """Return the list of properties."""
         return self._props
 
     def add_prop(self, prop: lexios.core.property.Property):
-        """Add a property to matter
+        """Add a property to matter.
 
         Args:
             prop (Property): property
@@ -71,7 +79,7 @@ class _BaseMatter(metaclass=PrePostInitMeta):
         MatterCreator.add_prop_to_matter(prop, matter=self)
 
     def get_prop(self, name: str, t: int, **kwargs):
-        """Get property value
+        """Get property value.
 
         Args:
             name (str): name of the property
@@ -83,11 +91,12 @@ class _BaseMatter(metaclass=PrePostInitMeta):
         return self.system.get_prop(name, t, instance=self, **kwargs)
 
     def set_prop(self, name: str, val: int | float, t: int, **kwargs):
+        """Set value for an property."""
         return self.system.set_prop(name, val, t, instance=self, **kwargs)
 
     @property
     def universe(self) -> universe.Universe | None:
-        """Return the universe that this matter belongs to
+        """Return the universe that this matter belongs to.
 
         Returns:
             Optional[Universe]: the universe
@@ -95,27 +104,37 @@ class _BaseMatter(metaclass=PrePostInitMeta):
         return self._universe
 
     def set_universe(self, value: universe.Universe):
+        """Set the universe which this matter belongs to."""
         assert isinstance(value, universe.Universe), f"Expected universe to be a Universe, got {type(universe)}"
         self._universe = value
 
     @property
     def system(self) -> System | None:
+        """Return the system."""
         return self._system
 
     @system.setter
     def system(self, system: System):
+        """Set the system."""
         assert isinstance(system, System), f"Expected system to be a System, but got {type(system)}"
         self._system = system
 
-class Matter(_BaseMatter): pass
+
+class Matter(_BaseMatter):
+    """A base class for derived different type of matters."""
+
+    pass
 
 
 class MacroMatter(Matter):
-    """At macroscopic scale, matter behaves in different ways according to classical mechanics"""
+    """At macroscopic scale, matter behaves in different ways according to classical mechanics."""
+
     pass
 
+
 class NanoMatter(_BaseMatter):
-    """At nanoscale, matter behaves in different ways according to quantum mechanics"""
+    """At nanoscale, matter behaves in different ways according to quantum mechanics."""
+
     pass
 
 
@@ -127,7 +146,10 @@ class NanoMatter(_BaseMatter):
 #     l.matter = matter
 #     return l
 
-class MatterCreator():
+
+class MatterCreator:
+    """A class responsible for initialize all properties, laws belongs to a matter."""
+
     # def __init__(self, laws: lexios.core.law.LawList, matter: Matter):
     #     self.laws = laws
     #     self.matter = matter
@@ -140,15 +162,16 @@ class MatterCreator():
             # matter.add_properties_in_law_to_matter()
             # matter.add_law()
 
-    def create_instance_from_class(self):
-        pass
+    # def create_instance_from_class(self):
+    #     pass
 
     @classmethod
     def add_law_to_matter(cls, law, matter):
+        """Add a law to matter."""
         # assert issubclass(law, lexios.core.law.Law), f"Expected law to be a Law, got {type(law)}"
 
         name = law.class_name()
-        if not name in matter.laws:
+        if name not in matter.laws:
             law_instance = law if isinstance(law, lexios.core.law.Law) else law()
             # TODO: do't call ._matter directly
             law_instance._matter = matter
@@ -166,10 +189,11 @@ class MatterCreator():
 
     @classmethod
     def add_prop_to_matter(cls, prop, matter):
+        """Add a property to matter."""
         # assert issubclass(type(prop), lexios.core.property.Property), f"Expected property to be a Property, but got {type(prop)}"
 
         name = prop.class_name()
-        if not name in matter.props:
+        if name not in matter.props:
             prop_instance = prop if isinstance(prop, lexios.core.property.Property) else prop()
             # TODO: all the logic in this function should be replace by prop.matter = matter
             prop_instance.matter = matter
