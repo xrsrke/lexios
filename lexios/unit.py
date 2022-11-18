@@ -1,7 +1,6 @@
 """Implementation of Unit class."""
 
 from dataclasses import dataclass
-from enum import Enum
 
 import sympy.physics.units as u
 
