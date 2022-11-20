@@ -99,7 +99,7 @@ class _BaseMatter(metaclass=PrePostInitMeta):
         return self.system.set_prop(name, val, t, instance=self, **kwargs)
 
     @property
-    def universe(self) -> Optiona[universe.Universe]:
+    def universe(self) -> Optional[universe.Universe]:
         """Return the universe that this matter belongs to.
 
         Returns:
