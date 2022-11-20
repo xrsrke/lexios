@@ -8,3 +8,5 @@ pytest-cov
 pytest-lazy-fixture
 tox
 pytest-clarity
+flake8
+mypy
