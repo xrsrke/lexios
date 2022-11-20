@@ -7,7 +7,7 @@ files:
   - ".pre-commit-config.yml"
   - ".pypirc"
   - "docs"
-  - "src/README.md"
+  - "lexios/README.md"
   - "CODE_OF_CONDUCT.md"
   - "LICENSE"
   - "README.md"

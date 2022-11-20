@@ -57,7 +57,7 @@ name = "lexios"
 exclude_dirs = ["build","dist","tests","scripts"]
 number = 4
 recursive = true
-targets = "src"
+targets = "lexios"
 
 [tool.black]
 line-length = 120
@@ -70,7 +70,7 @@ branch = true
 fail_under = 100
 
 [tool.pyright]
-include = ["src"]
+include = ["lexio"]
 exclude = [
     "**/node_modules",
     "**/__pycache__",
@@ -84,13 +84,13 @@ pythonVersion = "3.7"
 pythonPlatform = "Linux"
 
 executionEnvironments = [
-  { root = "src" }
+  { root = "lexios" }
 ]
 
 [tool.pytest.ini_options]
-#addopts = "--cov-report xml:coverage.xml --cov src --cov-fail-under 0 --cov-append -m 'not integration'"
+#addopts = "--cov-report xml:coverage.xml --cov lexios --cov-fail-under 0 --cov-append -m 'not integration'"
 pythonpath = [
-  "src"
+  "lexios"
 ]
 testpaths = "tests"
 junit_family = "xunit2"
