@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, List, Optional, TypedDict, Union
+from typing import TYPE_CHECKING, Dict, List, NewType, Optional, TypedDict, Union
 
 from fastcore.meta import PrePostInitMeta
 
@@ -16,6 +16,10 @@ class PropertyInfo(TypedDict):
     """An object that store data of an property."""
 
     pass
+
+
+TypingPropertyValue = NewType("PropertyValue", Union[int, float, bool])
+TypingTime = NewType("TypingTime", int)
 
 
 class _BaseMatter(metaclass=PrePostInitMeta):
@@ -78,7 +82,7 @@ class _BaseMatter(metaclass=PrePostInitMeta):
         """
         MatterCreator.add_prop_to_matter(prop, matter=self)
 
-    def get_prop(self, name: str, t: int, **kwargs):
+    def get_prop(self, name: str, t: TypingTime, **kwargs):
         """Get property value.
 
         Args:
@@ -90,12 +94,12 @@ class _BaseMatter(metaclass=PrePostInitMeta):
         """
         return self.system.get_prop(name, t, instance=self, **kwargs)
 
-    def set_prop(self, name: str, val: int | float, t: int, **kwargs):
+    def set_prop(self, name: str, val: TypingPropertyValue, t: TypingTime, **kwargs):
         """Set value for an property."""
         return self.system.set_prop(name, val, t, instance=self, **kwargs)
 
     @property
-    def universe(self) -> universe.Universe | None:
+    def universe(self) -> Optiona[universe.Universe]:
         """Return the universe that this matter belongs to.
 
         Returns:
