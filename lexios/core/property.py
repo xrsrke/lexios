@@ -201,3 +201,23 @@ class Acceleration(Property):
 #     p = prop()
 #     p.add_law(law)
 #     p.matter(matter)
+
+
+class Weight(Property):
+    """Weight Property."""
+
+    def __init__(self):
+        """Initialize the Weight property."""
+        super().__init__()
+        self.abrv = "w"
+        self.unit = Unit.NEWTON
+
+
+class GravityAcceleration(Property):
+    """Gravity acceleration property."""
+
+    def __init__(self):
+        """Initialize the Gravity acceleration property."""
+        super().__init__()
+        self.abrv = "g"
+        self.unit = Unit.ACCELERATION
