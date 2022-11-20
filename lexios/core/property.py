@@ -4,12 +4,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Union
 
-import lexios.core.law as law
+import lexios.core.law
 import lexios.matter
 from lexios.symbolic.symbol import Symbol
-from lexios.typing import TimeType
+from lexios.typing import TypingPropertyValue, TypingTime
 from lexios.unit import Unit
 from lexios.utils import camel_to_snake
+
+TypingLaw = lexios.core.law.Law
 
 
 class PropertyData(dict):
@@ -24,15 +26,15 @@ class _BaseProperty:
         self.abrv: str | None = None
         self.unit: Unit | None = None
         self._data: PropertyData = PropertyData()
-        self._laws: dict[str, law.Law] = dict()
-        self._matter: lexios.matter.Matter | None = None
+        self._laws: Dict[str, TypingLaw] = dict()
+        self._matter: Optional[lexios.matter.Matter] = None
 
     @classmethod
     def class_name(cls) -> str:
         """Return the snake style name of class."""
         return camel_to_snake(cls.__name__)
 
-    def symbol(self, t: int | float | tuple) -> Symbol | int | float:
+    def symbol(self, t: TypingTime) -> Union[Symbol, TypingPropertyValue]:
         """Return a symbolic expression of this property."""
         assert isinstance(
             t, (int, float, tuple)
@@ -54,7 +56,7 @@ class _BaseProperty:
 
         return symbol
 
-    def get_val(self, t: TimeType) -> int | Symbol:
+    def get_val(self, t: TypingTime) -> Union[Symbol, TypingPropertyValue]:
         """Get a value at a given time.
 
         Args:
@@ -62,7 +64,7 @@ class _BaseProperty:
         """
         return self._data[t]["val"] if t in self._data else self.symbol(t)
 
-    def set_val(self, val: str | int, t: TimeType):
+    def set_val(self, val: TypingPropertyValue, t: TypingTime):
         """Set the value at a given time for property.
 
         Args:
@@ -72,13 +74,13 @@ class _BaseProperty:
         self._data[t] = {"val": val}
 
     @property
-    def laws(self) -> dict[str, law.Law]:
+    def laws(self) -> Dict[str, TypingLaw]:
         """Return a list of laws that associated with this property."""
         return self._laws
 
-    def add_law(self, law: law.Law):
+    def add_law(self, law: TypingLaw):
         """Add a law that associated with this property."""
-        assert isinstance(law, law), f"Expected law to be a Law, got {type(law)}"
+        assert isinstance(law, lexios.core.law.Law), f"Expected law to be a Law, got {type(law)}"
 
         name = law.class_name()
         if self._laws and name not in self._laws:
@@ -102,7 +104,7 @@ class _BaseProperty:
         assert issubclass(type(matter), lexios.matter.Matter), f"Expected matter to be a Matter, but got {type(matter)}"
         self._matter = matter
 
-    def __call__(self, t: TimeType, **kwargs):
+    def __call__(self, t: TypingTime, **kwargs):
         """Call."""
         kwargs = kwargs
         if "eval" in kwargs and kwargs["eval"] is True:
@@ -124,9 +126,9 @@ class Property(_BaseProperty):
 class PropList:
     """Holds all properties in a list."""
 
-    def __init__(self, props: list[Property] = None):
+    def __init__(self, props: List[Property] = None):
         """Initialize a property list."""
-        self._props: dict[str, Property] = {}
+        self._props: Dict[str, Property] = {}
 
         if props is not None:
             for prop in props:
@@ -134,7 +136,7 @@ class PropList:
                 self._props[name] = prop
 
     @property
-    def props(self) -> dict[str, Property]:
+    def props(self) -> Dict[str, Property]:
         """Return all properties of this property list."""
         return self._props
 

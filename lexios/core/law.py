@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractclassmethod
-from typing import TYPE_CHECKING, Any, Dict, List, NoReturn, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 import lexios.core.property as prop
 import lexios.matter
@@ -13,18 +13,21 @@ from lexios.utils import camel_to_snake
 if TYPE_CHECKING:
     from lexios.core.property import Property
 
+TypingPropList = lexios.core.property.PropList
+TypingMatter = lexios.matter.Matter
+
 
 class _BaseLaw(ABC):
     """A law is an abstract concept. It can independenly exists without having matter."""
 
-    def __init__(self, matter: Optional[lexios.matter.Matter] = None):
+    def __init__(self, matter: Optional[TypingMatter] = None):
         """Initialize a new law.
 
         Args:
-            matter (Optional[lexios.matter.Matter], optional): matter that this law belongs to. Defaults to None.
+            matter (Optional[TypingMatter], optional): matter that this law belongs to. Defaults to None.
         """
         self._props: Dict[str, Property] = dict()
-        # self._matter: Optional[lexios.matter.Matter] = None
+        # self._matter: Optional[TypingMatter] = None
         self.matter = matter
         self.cbs: List[Callback] = []
 
@@ -38,16 +41,13 @@ class _BaseLaw(ABC):
         return self._props
 
     @props.setter
-    def props(self, props: dict):
+    def props(self, props: TypingPropList):
         """Set a list of properties that belong to this law."""
         if isinstance(props, prop.PropList):
-            for name, property in iter(props):
-                self.add_prop(name, property)
+            for name, prop in iter(props):
+                self.add_prop(name, prop)
 
-            # if self.matter:
-            #     self.add_law_to_matter(self.matter)
-
-    def get_prop(self, name: str) -> Property | None:
+    def get_prop(self, name: str) -> Optional[Property]:
         """Return the property of this law."""
         assert isinstance(name, str), f"Expected str to be a string, got {type(name)}"
         name = name.lower()
@@ -55,6 +55,8 @@ class _BaseLaw(ABC):
         for prop in self.props:
             if prop["prop"].class_name() == name:
                 return prop
+
+        return None
 
     def add_prop(self, name: str, prop: prop.Property):
         """Add a property.
@@ -65,21 +67,21 @@ class _BaseLaw(ABC):
         """
         self._props[name] = prop
 
-    def add_props_to_matter(self, matter: lexios.matter.Matter):
+    def add_props_to_matter(self, matter: TypingMatter):
         """Add all properties that belongs to this law to the matter."""
-        assert isinstance(matter, lexios.matter.Matter), f"Expected matter to be a Matter, got {type(matter)}"
+        assert isinstance(matter, TypingMatter), f"Expected matter to be a Matter, got {type(matter)}"
 
         if not self.props:
             for prop in self.props:
                 matter.add_prop(prop)
 
-    def add_law_to_matter(self, matter: lexios.matter.Matter):
+    def add_law_to_matter(self, matter: TypingMatter):
         """Add this law to the matter.
 
         Args:
             matter (_type_): Matter
         """
-        assert isinstance(matter, lexios.matter.Matter), f"Expected matter to be Matter, got {type(matter)}"
+        assert isinstance(matter, TypingMatter), f"Expected matter to be Matter, got {type(matter)}"
         matter.add_law(self)
         self.add_props_to_matter(matter)
 
@@ -102,13 +104,13 @@ class _BaseLaw(ABC):
     #     pass
 
     @property
-    def matter(self) -> lexios.matter.Matter | None:
+    def matter(self) -> Optional[TypingMatter]:
         return self._matter
 
     @matter.setter
-    def matter(self, matter: lexios.matter.Matter | None):
+    def matter(self, matter: Optional[TypingMatter]):
         """Set which matter this law belongs to."""
-        # assert isinstance(matter, (lexios.matter.Matter, None)), f"Expected matter to be a Matter, got {type(matter)}"
+        # assert isinstance(matter, (TypingMatter, None)), f"Expected matter to be a Matter, got {type(matter)}"
         self._matter = matter
         # self.add_law_to_matter(matter)
         # TODO: If a law belongs to some matter => move properties to that matter
@@ -136,9 +138,9 @@ class Law(_BaseLaw):
 class LawList:
     """Holds all laws in a list."""
 
-    def __init__(self, laws: list[Law] = None):
+    def __init__(self, laws: Optional[List[Law]] = None):
         """Initialize a law list."""
-        self._laws: dict[str, Law] = {}
+        self._laws: Dict[str, Law] = {}
 
         if laws is not None:
             for law in laws:
@@ -146,7 +148,7 @@ class LawList:
                 self._laws[name] = law
 
     @property
-    def laws(self) -> dict[str, Law]:
+    def laws(self) -> Dict[str, Law]:
         """Return a list of laws."""
         return self._laws
 

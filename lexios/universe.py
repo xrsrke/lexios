@@ -1,3 +1,5 @@
+"""Universe."""
+
 from __future__ import annotations
 
 from abc import ABC, abstractclassmethod
@@ -9,17 +11,25 @@ if TYPE_CHECKING:
 
 
 class _BaseUniverse:
+    """Base Universe."""
+
     def __init__(self):
-        self._props: dict[str, Property] | None = {}
-        self._laws: dict[str, Law] | None = {}
+        """Initialize."""
+        self._props: Dict[str, Property] = {}
+        self._laws: Dict[str, Law] = {}
 
     @property
-    def props(self) -> dict[str, Property] | None:
+    def props(self) -> Dict[str, Property]:
+        """Return all the properties that belongs to the universe."""
         return self._props
 
     @property
-    def laws(self) -> dict[str, Law] | None:
+    def laws(self) -> Dict[str, Law]:
+        """Return all the laws that belongs to the universe."""
         return self._laws
 
 
-class Universe(_BaseUniverse): pass
+class Universe(_BaseUniverse):
+    """Universe."""
+
+    pass

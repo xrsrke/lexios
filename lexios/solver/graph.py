@@ -15,7 +15,7 @@ class Graph:
         self.n_nodes = n_nodes
         self.weighted = weighted
         self.data: List[List[Node]] = [[] for _ in range(n_nodes)]
-        self.weight: List[Weight] = [[] for _ in range(n_nodes)]
+        self.weight: List[Union[List[Weight], List]] = [[] for _ in range(n_nodes)]
 
         for edge in edges:
             if self.weight:
@@ -31,9 +31,6 @@ class Graph:
     def find_edges(self, node: Node) -> List[Node]:
         """Return all the neighbors nodes of a node."""
         return self.data[node]
-
-    # def find_weights(self, node: Node):
-    #     return self.weight[node]
 
     def find_weight(self, node1: Node, node2: Node) -> Weight:
         """Return the weight between two nodes."""

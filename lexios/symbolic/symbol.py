@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Dict, TypeVar, Union
+from typing import Dict, Optional, TypeVar, Union
 
 import sympy
 import sympy as smp
@@ -20,7 +20,7 @@ class _BaseSymbol(sympy.core.symbol.Symbol):
 
     def __init__(self, *args):
         """Initialize the symbol."""
-        self._states: dict[str, T] = dict()
+        self._states: Dict[str, T] = dict()
 
     def eval(self):
         matter = self.get_state("matter")
@@ -38,7 +38,7 @@ class _BaseSymbol(sympy.core.symbol.Symbol):
         """
         self._states[name] = value
 
-    def get_state(self, name: str) -> dict[str, T]:
+    def get_state(self, name: str) -> Optional[Dict[str, T]]:
         """Get state.
 
         Args:
@@ -50,7 +50,7 @@ class _BaseSymbol(sympy.core.symbol.Symbol):
         return self._states.get(name)
 
     @property
-    def states(self) -> dict[str, str | T]:
+    def states(self) -> Dict[str, str | T]:
         """Return all states.
 
         Returns:
