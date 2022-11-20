@@ -11,7 +11,7 @@ from lexios.typing import TypingPropertyValue, TypingTime
 from lexios.unit import Unit
 from lexios.utils import camel_to_snake
 
-TypingLaw = lexios.core.law.Law
+# lexios.core.law.Law = lexios.core.law.Law
 
 
 class PropertyData(dict):
@@ -26,7 +26,7 @@ class _BaseProperty:
         self.abrv: str | None = None
         self.unit: Unit | None = None
         self._data: PropertyData = PropertyData()
-        self._laws: Dict[str, TypingLaw] = dict()
+        self._laws: Dict[str, lexios.core.law.Law] = dict()
         self._matter: Optional[lexios.matter.Matter] = None
 
     @classmethod
@@ -34,7 +34,7 @@ class _BaseProperty:
         """Return the snake style name of class."""
         return camel_to_snake(cls.__name__)
 
-    def symbol(self, t: TypingTime) -> Union[Symbol, TypingPropertyValue]:
+    def symbol(self, t: TypingTime) -> Union[Symbol, lexios.core.property.PropertyValue]:
         """Return a symbolic expression of this property."""
         assert isinstance(
             t, (int, float, tuple)
@@ -56,7 +56,7 @@ class _BaseProperty:
 
         return symbol
 
-    def get_val(self, t: TypingTime) -> Union[Symbol, TypingPropertyValue]:
+    def get_val(self, t: TypingTime) -> Union[Symbol, lexios.core.property.PropertyValue]:
         """Get a value at a given time.
 
         Args:
@@ -74,11 +74,11 @@ class _BaseProperty:
         self._data[t] = {"val": val}
 
     @property
-    def laws(self) -> Dict[str, TypingLaw]:
+    def laws(self) -> Dict[str, lexios.core.law.Law]:
         """Return a list of laws that associated with this property."""
         return self._laws
 
-    def add_law(self, law: TypingLaw):
+    def add_law(self, law: lexios.core.law.Law):
         """Add a law that associated with this property."""
         assert isinstance(law, lexios.core.law.Law), f"Expected law to be a Law, got {type(law)}"
 

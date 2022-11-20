@@ -69,8 +69,9 @@ def test_add_callbacks_to_law(law, three_cbs):
 
     first_cb = law.cbs[0]
     assert first_cb.law == law
-
-    # law_name = law.class_name()
+    assert first_cb.props == law.props
+    assert first_cb.matter == law.matter
+    assert first_cb.system == law.system
 
 
 @pytest.mark.skip("not implemented")
@@ -81,5 +82,8 @@ def test_convert_to_pound_callbacks(fully_customized_matter):
     # assert fully_customized_matter.add
 
 
-def test_remove_a_callback_from_law():
-    pass
+@pytest.mark.parametrize("name", ["round_significant_figure", 0])
+def test_remove_a_callback_from_law(law, name):
+    law.remove_cb("round_significant_figure")
+
+    # assert len(law)

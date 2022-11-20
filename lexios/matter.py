@@ -12,10 +12,10 @@ import lexios.universe
 from lexios.system import System
 from lexios.typing import TypingPropertyValue, TypingTime
 
-TypingUniverse = lexios.universe.Universe
-TypingLaw = lexios.core.law.Law
-TypingLawList = lexios.core.law.LawList
-TypingProperty = lexios.core.property.Property
+# TypingUniverse = lexios.universe.Universe
+# lexios.core.law.Law = lexios.core.law.Law
+# lexios.core.law.LawList = lexios.core.law.LawList
+# lexios.core.property.Property = lexios.core.property.Property
 
 
 class PropertyInfo(TypedDict):
@@ -29,9 +29,9 @@ class _BaseMatter(metaclass=PrePostInitMeta):
 
     def __init__(self):
         """Initialize a matter."""
-        self._props: Dict[str, TypingProperty] = dict()
-        self._laws: Dict[str, TypingLaw] = dict()
-        self._universe: Optional[TypingUniverse] = None
+        self._props: Dict[str, lexios.core.property.Property] = dict()
+        self._laws: Dict[str, lexios.core.law.Law] = dict()
+        self._universe: Optional[lexios.universe.Universe] = None
         self._system: System = System()
 
     # def __post_init__(self):
@@ -45,7 +45,7 @@ class _BaseMatter(metaclass=PrePostInitMeta):
     #             self.add_law(law)
 
     @property
-    def laws(self) -> Dict[str, TypingLaw]:
+    def laws(self) -> Dict[str, lexios.core.law.Law]:
         """Return the list of laws that this matter obeys to.
 
         Returns:
@@ -54,16 +54,16 @@ class _BaseMatter(metaclass=PrePostInitMeta):
         return self._laws
 
     @laws.setter
-    def laws(self, laws: List[TypingLaw]):
+    def laws(self, laws: List[lexios.core.law.Law]):
         """Add a list of laws to this matter."""
-        # if isinstance(laws, TypingLawList):
+        # if isinstance(laws, lexios.core.law.LawList):
         #     self._laws = laws.laws
-        if isinstance(laws, TypingLawList):
+        if isinstance(laws, lexios.core.law.LawList):
             law_list = laws
             for name, law_class in law_list.laws.items():
                 self.add_law(law_class)
 
-    def add_law(self, law: TypingLaw):
+    def add_law(self, law: lexios.core.law.Law):
         """Add a law class to this matter.
 
         Args:
@@ -72,11 +72,11 @@ class _BaseMatter(metaclass=PrePostInitMeta):
         MatterCreator.add_law_to_matter(law, matter=self)
 
     @property
-    def props(self) -> Dict[str, TypingProperty]:
+    def props(self) -> Dict[str, lexios.core.property.Property]:
         """Return the list of properties."""
         return self._props
 
-    def add_prop(self, prop: TypingProperty):
+    def add_prop(self, prop: lexios.core.property.Property):
         """Add a property to matter.
 
         Args:
@@ -101,7 +101,7 @@ class _BaseMatter(metaclass=PrePostInitMeta):
         return self.system.set_prop(name, val, t, instance=self, **kwargs)
 
     @property
-    def universe(self) -> Optional[TypingUniverse]:
+    def universe(self) -> Optional[lexios.universe.Universe]:
         """Return the universe that this matter belongs to.
 
         Returns:
@@ -109,9 +109,11 @@ class _BaseMatter(metaclass=PrePostInitMeta):
         """
         return self._universe
 
-    def set_universe(self, universe: TypingUniverse):
+    def set_universe(self, universe: lexios.universe.Universe):
         """Set the universe which this matter belongs to."""
-        assert isinstance(universe, TypingUniverse), f"Expected universe to be a Universe, got {type(universe)}"
+        assert isinstance(
+            universe, lexios.universe.Universe
+        ), f"Expected universe to be a Universe, got {type(universe)}"
         self._universe = universe
 
     @property
@@ -145,7 +147,7 @@ class NanoMatter(_BaseMatter):
 
 
 # def create_law_belongs_to_matter(law, matter):
-#     assert issubclass(law, TypingLaw) == True
+#     assert issubclass(law, lexios.core.law.Law) == True
 #     assert isinstance(matter, Matter) == True
 
 #     l = law()
@@ -156,12 +158,12 @@ class NanoMatter(_BaseMatter):
 class MatterCreator:
     """A class responsible for initialize all properties, laws belongs to a matter."""
 
-    # def __init__(self, laws: TypingLawList, matter: Matter):
+    # def __init__(self, laws: lexios.core.law.LawList, matter: Matter):
     #     self.laws = laws
     #     self.matter = matter
 
     @classmethod
-    def add_laws_to_matter(cls, laws: TypingLawList, matter: Matter):
+    def add_laws_to_matter(cls, laws: lexios.core.law.LawList, matter: Matter):
         """Add all the laws to matter."""
         for law in laws:
             law.matter = matter
@@ -174,11 +176,11 @@ class MatterCreator:
     @classmethod
     def add_law_to_matter(cls, law, matter):
         """Add a law to matter."""
-        # assert issubclass(law, TypingLaw), f"Expected law to be a Law, got {type(law)}"
+        # assert issubclass(law, lexios.core.law.Law), f"Expected law to be a Law, got {type(law)}"
 
         name = law.class_name()
         if name not in matter.laws:
-            law_instance = law if isinstance(law, TypingLaw) else law()
+            law_instance = law if isinstance(law, lexios.core.law.Law) else law()
             # TODO: do't call ._matter directly
             law_instance._matter = matter
             matter.laws[name] = law_instance
@@ -196,11 +198,11 @@ class MatterCreator:
     @classmethod
     def add_prop_to_matter(cls, prop, matter):
         """Add a property to matter."""
-        # assert issubclass(type(prop), TypingProperty), f"Expected property to be a Property, but got {type(prop)}"
+        # assert issubclass(type(prop), lexios.core.property.Property), f"Expected property to be a Property, but got {type(prop)}"
 
         name = prop.class_name()
         if name not in matter.props:
-            prop_instance = prop if isinstance(prop, TypingProperty) else prop()
+            prop_instance = prop if isinstance(prop, lexios.core.property.Property) else prop()
             # TODO: all the logic in this function should be replace by prop.matter = matter
             prop_instance.matter = matter
             matter.props[name] = prop_instance

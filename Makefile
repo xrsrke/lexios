@@ -4,8 +4,8 @@ test:
 install:
 	pip install -r requirements.txt
 
-install-dev:
-	pip install -r requirements-dev.txt
+dev-setup:
+	pip install -r requirements_dev.txt
 	pre-commit install
 
 precommit:

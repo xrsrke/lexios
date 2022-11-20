@@ -118,6 +118,10 @@ class ConvertToPoundCallback(Callback):
         pass
 
 
+class RoundSignificantFigure(Callback):
+    pass
+
+
 class LogPracticeCallback(Callback):
     pass
 
