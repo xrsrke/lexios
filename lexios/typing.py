@@ -11,4 +11,4 @@ ChangeInTime = Tuple[Union[int, float]]
 TypingTime = Union[Time, ChangeInTime]
 
 PropertyValue = Union[int, float, bool]
-TypingPropertyValue = NewType("lexios.core.property.PropertyValue", PropertyValue)
+TypingPropertyValue = NewType("TypingPropertyValue", PropertyValue)

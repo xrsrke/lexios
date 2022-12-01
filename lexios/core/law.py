@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 from abc import ABC, abstractclassmethod
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Dict, List, Optional
+
+from fastcore.foundation import L
 
 import lexios.core.property as prop
 import lexios.matter
@@ -20,16 +22,18 @@ if TYPE_CHECKING:
 class _BaseLaw(ABC):
     """A law is an abstract concept. It can independenly exists without having matter."""
 
-    def __init__(self, matter: Optional[lexios.matter.Matter] = None):
+    def __init__(self, matter: Optional[lexios.matter.Matter] = None, cbs: Optional[List[Callback]] = []):
         """Initialize a new law.
 
         Args:
             matter (Optional[lexios.matter.Matter], optional): matter that this law belongs to. Defaults to None.
+            cbs: a list of callbacks
         """
         self._props: Dict[str, Property] = dict()
-        # self._matter: Optional[lexios.matter.Matter] = None
+        self._matter: Optional[lexios.matter.Matter] = None
         self.matter = matter
-        self.cbs: List[Callback] = []
+        self.cbs = L([])
+        self.add_cbs(cbs)
 
     @property
     def props(self) -> Dict[str, Property]:
@@ -85,14 +89,17 @@ class _BaseLaw(ABC):
         matter.add_law(self)
         self.add_props_to_matter(matter)
 
+    def ordered_cbs(self) -> List[Callback]:
+        # if len(self.cbs > 0):
+        return [cb for cb in self.cbs.sorted("order")]
+
     def add_cbs(self, cbs: List[Callback]):
         """Add a list of callbacks.
 
         Args:
             cbs (List[Callback]): a list of callbacks
         """
-        for cb in cbs:
-            self.add_cb(cb)
+        L(cbs).map(self.add_cb)
 
     def add_cb(self, cb: Callback):
         if isinstance(cb, type):
@@ -100,8 +107,15 @@ class _BaseLaw(ABC):
         cb.law = self
         self.cbs.append(cb)
 
-    # def _with_events(self):
-    #     pass
+    def remove_cb(self, cb: Callback):
+        """Remove a callback from the list of callback.
+
+        Args:
+            cb (Callback): callback you want to remove
+        """
+        cb.law = None
+        if cb in self.cbs:
+            self.cbs.remove(cb)
 
     @property
     def matter(self) -> Optional[lexios.matter.Matter]:

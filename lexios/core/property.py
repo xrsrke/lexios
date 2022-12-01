@@ -2,16 +2,22 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Union
+from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, TypeVar, Union
 
 import lexios.core.law
 import lexios.matter
-from lexios.symbolic.symbol import Symbol
+
+# from lexios.symbolic.symbol import Symbol
+import lexios.symbolic.symbol as symbol
+from lexios.core.state import State
 from lexios.typing import TypingPropertyValue, TypingTime
 from lexios.unit import Unit
 from lexios.utils import camel_to_snake
 
 # lexios.core.law.Law = lexios.core.law.Law
+
+Symbol = symbol.Symbol
+T = TypeVar("T")
 
 
 class PropertyData(dict):
@@ -20,9 +26,11 @@ class PropertyData(dict):
     pass
 
 
-class _BaseProperty:
+class _BaseProperty(State):
     def __init__(self):
         """Initialize property."""
+        State.__init__(self)
+
         self.abrv: str | None = None
         self.unit: Unit | None = None
         self._data: PropertyData = PropertyData()
@@ -34,7 +42,12 @@ class _BaseProperty:
         """Return the snake style name of class."""
         return camel_to_snake(cls.__name__)
 
-    def symbol(self, t: TypingTime) -> Union[Symbol, lexios.core.property.PropertyValue]:
+    @property
+    def name(self) -> str:
+        """Return the snake style name of the property."""
+        return self.class_name()
+
+    def symbol(self, t: TypingTime) -> Union[Symbol, TypingPropertyValue]:
         """Return a symbolic expression of this property."""
         assert isinstance(
             t, (int, float, tuple)
@@ -49,14 +62,14 @@ class _BaseProperty:
             expr = rf"\Delta {self.abrv}_{t[0]},{t[1]}"
 
         symbol = Symbol(expr)
-        symbol.set_state("t", t)
-        symbol.set_state("name", self.class_name())
-        symbol.set_state("type", "prop")
-        symbol.set_state("matter", self.matter)
+        self._set_states_for_symbol(symbol, t=t)
 
         return symbol
 
-    def get_val(self, t: TypingTime) -> Union[Symbol, lexios.core.property.PropertyValue]:
+    def _set_states_for_symbol(self, symbol: Symbol, **kwargs):
+        symbol.set_states({"name": self.class_name(), "type": "prop", "prop": self, "matter": self.matter, **kwargs})
+
+    def get_val(self, t: TypingTime) -> Union[Symbol, TypingPropertyValue]:
         """Get a value at a given time.
 
         Args:
@@ -104,14 +117,6 @@ class _BaseProperty:
         assert issubclass(type(matter), lexios.matter.Matter), f"Expected matter to be a Matter, but got {type(matter)}"
         self._matter = matter
 
-    def __call__(self, t: TypingTime, **kwargs):
-        """Call."""
-        kwargs = kwargs
-        if "eval" in kwargs and kwargs["eval"] is True:
-            return self.get_val(t)
-        else:
-            return self.symbol(t)
-
     def __repr__(self) -> str:
         """Return an expression of the class."""
         return f"{self.class_name().capitalize()}"
@@ -119,6 +124,19 @@ class _BaseProperty:
 
 class Property(_BaseProperty):
     """Base class for all properties in matter."""
+
+    def __call__(self, t: TypingTime, **kwargs):
+        """Call."""
+        kwargs = kwargs
+        if "eval" in kwargs and kwargs["eval"] is True:
+            # TODO: splt get_val for constant property
+            return self.get_val(t)
+        else:
+            return self.symbol(t)
+
+
+class ConstantProperty(Property):
+    """Constant property."""
 
     pass
 

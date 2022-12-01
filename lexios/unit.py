@@ -30,6 +30,8 @@ class Unit:
     GRAM = u.gram
     POUND = u.pound
     NEWTON = u.newton
+    METER = u.meter
+    SECOND = u.second
 
 
 def str2unit(value: str):

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import pytest
 
+import lexios.constant as constant
 import lexios.core.property as prop
 from lexios.symbolic.symbol import Symbol
 from lexios.unit import Unit
@@ -25,28 +26,53 @@ def test_create_empty_mass_property(mass):
     assert isinstance(mass(t=3), Symbol)
 
 
-def test_set_val_for_property(mass):
-    mass.set_val("10 kg", t=2)
-    mass.set_val(12.2 * Unit.MASS, t=3)
+def test_states_of_symbol_property(mass):
+    symbol = mass.symbol(t=1)
 
-    mass.get_val(t=2) == Unit.MASS
-    mass.get_val(t=3) == 12.2 * Unit.MASS
+    assert symbol.get_state("t") == 1
+    assert symbol.get_state("type") == "prop"
+    assert symbol.get_state("mass") is None
+    assert symbol.get_state("name") == "mass"
+
+
+################################################################
+# States
+
+
+def test_set_state_for_mass_property(mass):
+    mass.set_state("t", 1)
+
+    assert mass.get_state("t") == 1
+    assert mass.get_state("not_exist") is None
+
+
+################################################################
+# Values
+
+
+def test_get_val_of_property(force_with_value):
+    assert force_with_value.get_val(t=1) == 10 * Unit.NEWTON
+
+
+def test_call_get_val_of_property(force_with_value):
+    assert force_with_value(t=1).eval() == 10 * Unit.NEWTON
 
 
 def test_eval_nonempty_property(force_with_value):
+    # TODO: because pro get value through matter => fails
     assert force_with_value(t=1).eval() == 10 * Unit.NEWTON
 
 
 @pytest.mark.skip(reason="Will implement str2unit later")
 def test_raise_exception_when_set_val_for_property(mass):
     with pytest.raises(ValueError, contains="Value need to be integer follows by unit"):
-        mass.set_val("example")
+        mass("example")
 
     with pytest.raises(ValueError, contains="Need to specify time"):
-        mass.set_val("10 kg")
+        mass("10 kg")
 
     with pytest.raises(ValueError, contains="Time need to be an positive integer"):
-        mass.set_val("10 kg", t=-1)
+        mass("10 kg", t=-1)
 
 
 def test_get_value_that_not_exist_for_property():
@@ -59,6 +85,33 @@ def test_remove_value_that_not_exist_for_property():
 
 def test_add_get_remove_value_for_property():
     pass
+
+
+################################################################
+# FOR BOOLEAN PROPERTY
+class OnEarth(prop.Property):
+    pass
+
+
+# def test_boolean_property():
+#     property = OnEarth()
+
+#     assert property(t=1) == True
+#     assert property(t=1) == False
+
+################################################################
+# FOR CONSTANT PROPERTY
+
+
+class GravitationalConstant(prop.Property):
+    pass
+
+
+def test_constant_property():
+    gravitational_constant = GravitationalConstant()
+    assert gravitational_constant.is_constant is True
+    assert gravitational_constant(t=1) == constant.G_CONSTANT
+    assert gravitational_constant(t=99) == constant.G_CONSTANT
 
 
 ################################################################

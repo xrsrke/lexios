@@ -9,9 +9,9 @@ import lexios.core.property as prop
 import lexios.matter as matter
 import lexios.system
 import lexios.universe
+from lexios.callback.calc import ConvertToPoundCallback
 from lexios.callback.core import Callback
 from lexios.physics.newton import NewtonFirstLaw
-from lexios.unit import Unit, unit_convert
 
 
 class LawWithoutProperty(law.Law):
@@ -108,18 +108,6 @@ def universe():
 
 ################################################################
 # Callback
-
-
-class ConvertToPoundCallback(Callback):
-    def convert_to_pound(self, quantity):
-        return unit_convert(quantity, Unit.POUND)
-
-    def after_get_prop(self):
-        pass
-
-
-class RoundSignificantFigure(Callback):
-    pass
 
 
 class LogPracticeCallback(Callback):

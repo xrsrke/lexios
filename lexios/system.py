@@ -2,13 +2,16 @@
 
 from __future__ import annotations
 
-from typing import Union
+from typing import Dict, TypeVar, Union
 
 from fastcore.meta import PrePostInitMeta
 
 import lexios.core.law as law
+import lexios.core.property
 import lexios.matter as matter
 from lexios.typing import TypingTime
+
+T = TypeVar("T")
 
 
 class _BaseSystem(metaclass=PrePostInitMeta):
@@ -24,6 +27,10 @@ class System(_BaseSystem):
         """Initialize."""
         self._states = {"x": 1}
 
+    def set_state_to_prop(self, prop: lexios.core.property.Property, states: Dict[str, T]):
+        """Set state to prop."""
+        prop.set_states(states)
+
     def get_prop(
         self,
         name: str,
@@ -33,9 +40,17 @@ class System(_BaseSystem):
     ):
         """Get properties."""
         if isinstance(instance, matter.Matter):
-            return instance.props[name](t, **kwargs)
+            prop = instance.props[name]
+            states = {"t": t, **kwargs}
+            self.set_state_to_prop(prop, states)
+
+            return prop(t, **kwargs)
 
     def set_prop(self, name: str, val, t: TypingTime, instance, **kwargs):
         """Set the properties."""
         if isinstance(instance, matter.Matter):
-            instance.props[name].set_val(val, t, **kwargs)
+            prop = instance.props[name]
+            states = {"val": val, "t": t, **kwargs}
+            self.set_state_to_prop(prop, states)
+
+            prop.set_val(val, t, **kwargs)

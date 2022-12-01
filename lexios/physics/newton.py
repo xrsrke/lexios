@@ -4,6 +4,8 @@ from __future__ import annotations
 import lexios.core.property as prop
 from lexios.core.law import Law
 
+# from lexios.callback.calc import SignificantFigureCallback
+
 
 class NewtonFirstLaw(Law):
     """Newton First Law of Motion."""
@@ -23,7 +25,7 @@ class NewtonFirstLaw(Law):
         pass
 
 
-class WeightOnEarth:
+class WeightOnEarth(Law):
     """Weight of an object on the Earth's surface."""
 
     def __init__(self):
