@@ -71,23 +71,24 @@ class _BaseLaw(ABC):
         """
         self._props[name] = prop
 
-    def add_props_to_matter(self, matter: lexios.matter.Matter):
-        """Add all properties that belongs to this law to the matter."""
-        assert isinstance(matter, lexios.matter.Matter), f"Expected matter to be a Matter, got {type(matter)}"
+    # def add_props_to_matter(self, matter: lexios.matter.Matter):
+    #     """Add all properties that belongs to this law to the matter."""
+    #     assert isinstance(matter, lexios.matter.Matter), f"Expected matter to be a Matter, got {type(matter)}"
 
-        if not self.props:
-            for prop in self.props:
-                matter.add_prop(prop)
+    #     if not self.props:
+    #         for prop in self.props:
+    #             matter.add_prop(prop)
 
-    def add_law_to_matter(self, matter: lexios.matter.Matter):
-        """Add this law to the matter.
+    # def add_law_to_matter(self, matter: lexios.matter.Matter):
+    #     """Add this law to the matter.
 
-        Args:
-            matter (_type_): Matter
-        """
-        assert isinstance(matter, lexios.matter.Matter), f"Expected matter to be Matter, got {type(matter)}"
-        matter.add_law(self)
-        self.add_props_to_matter(matter)
+    #     Args:
+    #         matter (_type_): Matter
+    #     """
+    #     assert isinstance(matter, lexios.matter.Matter), f"Expected matter to be Matter, got {type(matter)}"
+    #     # LawCreator(self).add_to_matter(matter)
+    #     # matter.add_law(self)
+    #     # self.add_props_to_matter(matter)
 
     def ordered_cbs(self) -> List[Callback]:
         # if len(self.cbs > 0):
@@ -147,6 +148,25 @@ class Law(_BaseLaw):
     """Base class for all laws in matter."""
 
     pass
+
+
+class LawCreator:
+    """Responsible for create a law belongs to a matter."""
+
+    def __init__(self, law: Law):
+        """Initialize."""
+        self.law = law
+
+    def add_props_to_matter(self, matter):
+        """Add all properties belongs to this law to matter."""
+        if not self.law.props:
+            for p in self.law.props:
+                matter.add_prop(p)
+
+    def add_to_matter(self, matter: lexios.matter.Matter):
+        """Add the law to matter."""
+        matter.add_law(self)
+        self.add_props_to_matter(matter)
 
 
 class LawList:

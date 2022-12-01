@@ -34,16 +34,6 @@ class _BaseMatter(metaclass=PrePostInitMeta):
         self._universe: Optional[lexios.universe.Universe] = None
         self._system: System = System()
 
-    # def __post_init__(self):
-    #     """Automatically initialize and add laws, properties to this matter"""
-    #     self._init_laws()
-
-    # def _init_laws(self):
-    #     """Initialize and add laws, properties to this"""
-    #     if self.laws:
-    #         for law in self.laws:
-    #             self.add_law(law)
-
     @property
     def laws(self) -> Dict[str, lexios.core.law.Law]:
         """Return the list of laws that this matter obeys to.
@@ -94,11 +84,11 @@ class _BaseMatter(metaclass=PrePostInitMeta):
         Returns:
             _type_: _description_
         """
-        return self.system.get_prop(name, t, instance=self, **kwargs)
+        return MatterController(self).get_prop(name, t, instance=self, **kwargs)
 
     def set_prop(self, name: str, val: TypingPropertyValue, t: TypingTime, **kwargs):
         """Set value for an property."""
-        return self.system.set_prop(name, val, t, instance=self, **kwargs)
+        return MatterController(self).set_prop(name, val, t, instance=self, **kwargs)
 
     @property
     def universe(self) -> Optional[lexios.universe.Universe]:
@@ -146,32 +136,14 @@ class NanoMatter(_BaseMatter):
     pass
 
 
-# def create_law_belongs_to_matter(law, matter):
-#     assert issubclass(law, lexios.core.law.Law) == True
-#     assert isinstance(matter, Matter) == True
-
-#     l = law()
-#     l.matter = matter
-#     return l
-
-
 class MatterCreator:
     """A class responsible for initialize all properties, laws belongs to a matter."""
-
-    # def __init__(self, laws: lexios.core.law.LawList, matter: Matter):
-    #     self.laws = laws
-    #     self.matter = matter
 
     @classmethod
     def add_laws_to_matter(cls, laws: lexios.core.law.LawList, matter: Matter):
         """Add all the laws to matter."""
         for law in laws:
             law.matter = matter
-            # matter.add_properties_in_law_to_matter()
-            # matter.add_law()
-
-    # def create_instance_from_class(self):
-    #     pass
 
     @classmethod
     def add_law_to_matter(cls, law, matter):
@@ -188,13 +160,6 @@ class MatterCreator:
             for name, prop in law_instance.props.items():
                 MatterCreator.add_prop_to_matter(prop, matter)
 
-    # @classmethod
-    # def add_properties_in_law_to_matter(self, law):
-    #     """Add all the properties in a law to matter."""
-    #     for prop in law.properties:
-    #         if prop.class_name not in self.matter.props:
-    #             self.matter.add_prop(prop)
-
     @classmethod
     def add_prop_to_matter(cls, prop, matter):
         """Add a property to matter."""
@@ -207,5 +172,18 @@ class MatterCreator:
             prop_instance.matter = matter
             matter.props[name] = prop_instance
 
-    # def initialize_law(self):
-    #     pass
+
+class MatterController:
+    """Responsible for matter communicate with system."""
+
+    def __init__(self, matter: Matter):
+        """Initialize."""
+        self.matter = matter
+
+    def get_prop(self, *args, **kwargs):
+        """Get property value."""
+        return self.matter.system.get_prop(*args, **kwargs)
+
+    def set_prop(self, *args, **kwargs):
+        """Set property value."""
+        self.matter.system.set_prop(*args, **kwargs)

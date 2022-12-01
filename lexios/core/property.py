@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
+from abc import ABC, abstractclassmethod
 from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, TypeVar, Union
 
 import lexios.core.law
 import lexios.matter
-
-# from lexios.symbolic.symbol import Symbol
 import lexios.symbolic.symbol as symbol
 from lexios.core.state import State
 from lexios.typing import TypingPropertyValue, TypingTime
@@ -23,7 +22,26 @@ T = TypeVar("T")
 class PropertyData(dict):
     """Store data of property."""
 
-    pass
+    def get_val(self, t: TypingTime, key: str):
+        """Get value.
+
+        Args:
+            t (TypingTime): time
+            key (str): name
+        """
+        # return self[t]
+        pass
+
+    # def set_val(self, t, key):
+
+
+# class PropertyCreator:
+#     """A class responsible for creating new property."""
+#     pass
+
+# class SymbolProperty:
+#     def __init__(self, property):
+#         pass
 
 
 class _BaseProperty(State):
@@ -47,6 +65,10 @@ class _BaseProperty(State):
         """Return the snake style name of the property."""
         return self.class_name()
 
+    @property
+    def expr(self) -> str:
+        pass
+
     def symbol(self, t: TypingTime) -> Union[Symbol, TypingPropertyValue]:
         """Return a symbolic expression of this property."""
         assert isinstance(
@@ -61,13 +83,7 @@ class _BaseProperty(State):
             assert len(t) == 2, "Expected 2 arguments, one for start time and one for end time"
             expr = rf"\Delta {self.abrv}_{t[0]},{t[1]}"
 
-        symbol = Symbol(expr)
-        self._set_states_for_symbol(symbol, t=t)
-
-        return symbol
-
-    def _set_states_for_symbol(self, symbol: Symbol, **kwargs):
-        symbol.set_states({"name": self.class_name(), "type": "prop", "prop": self, "matter": self.matter, **kwargs})
+        return SymbolPropertyCreator(self, expr).create(t=t)
 
     def get_val(self, t: TypingTime) -> Union[Symbol, TypingPropertyValue]:
         """Get a value at a given time.
@@ -121,6 +137,14 @@ class _BaseProperty(State):
         """Return an expression of the class."""
         return f"{self.class_name().capitalize()}"
 
+    @abstractclassmethod
+    def return_value(self):
+        pass
+
+    @abstractclassmethod
+    def return_symbol(self):
+        pass
+
 
 class Property(_BaseProperty):
     """Base class for all properties in matter."""
@@ -135,10 +159,49 @@ class Property(_BaseProperty):
             return self.symbol(t)
 
 
+class SymbolPropertyCreator:
+    """A class responsible for return a symbol that stores the reference to the property."""
+
+    def __init__(self, prop: Property, expr: str):
+        """Initialize."""
+        self.prop = prop
+        self.expr = expr
+
+    def create(self, **kwargs):
+        """Create the symbol."""
+        symbol = Symbol(self.expr)
+        self.set_states(symbol, **kwargs)
+
+        return symbol
+
+    @property
+    def states(self):
+        """Return the states of the symbol."""
+        states = {
+            "name": self.prop.name,
+            "type": "prop",
+            "prop": self.prop,
+            "matter": self.prop.matter,
+        }
+
+        return states
+
+    def set_states(self, symbol: Symbol, **kwargs):
+        """Stores states reference to which property."""
+        states = self.states
+        states.update(**kwargs)
+        symbol.set_states(states)
+
+
 class ConstantProperty(Property):
     """Constant property."""
 
     pass
+
+
+# class PropertyCreator:
+#     def __init__(self, prop):
+#         self.prop = prop
 
 
 class PropList:
