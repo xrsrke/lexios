@@ -11,4 +11,5 @@ ChangeInTime = Tuple[Union[int, float]]
 TypingTime = Union[Time, ChangeInTime]
 
 PropertyValue = Union[int, float, bool]
-TypingPropertyValue = NewType("TypingPropertyValue", PropertyValue)
+# TypingPropertyValue = NewType("TypingPropertyValue", PropertyValue)
+TypingPropertyValue = Union[int, float, bool]
