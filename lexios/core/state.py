@@ -1,6 +1,6 @@
 """State."""
 
-from typing import Dict, Optional, TypeVar
+from typing import Dict, Optional, TypeVar, Union
 
 T = TypeVar("T")
 
@@ -40,7 +40,7 @@ class State:
         return self._states.get(name)
 
     @property
-    def states(self) -> Dict[str, str | T]:
+    def states(self) -> Dict[str, Union[str, T]]:
         """Return all states.
 
         Returns:

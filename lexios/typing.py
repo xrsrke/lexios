@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import NewType, Tuple, Union
 
-TimeType = Union[int, float, tuple[Union[int, float]]]
+TimeType = Union[int, float, Tuple[Union[int, float]]]
 
 Time = Union[int, float]
 ChangeInTime = Tuple[Union[int, float]]
